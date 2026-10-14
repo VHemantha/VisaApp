@@ -48,6 +48,17 @@ Search the `build/` folder for `PLACEHOLDER`:
 
 Destination costs and visa rules are **indicative 2026 figures**. Review them each intake.
 
+## Loading screen & animations
+
+A branded loading screen ("Preparing your journey…") shows while the page starts. Set `loader` in `build/config.mjs`:
+- `'session'` (default): shown on the first page a visitor opens, so browsing between pages stays instant
+- `'always'`: shown on every page load
+- `'off'`: never shown (gives the best Lighthouse performance score)
+
+The loader shows for at least 0.7 s and hides as soon as the page is ready. CSS also hides it after 4 s if JavaScript fails.
+
+The other animations are the hero entrance, scroll reveals, the timeline drawing in, counters, hover effects, a scroll progress bar and the WhatsApp pulse. All of them are turned off for visitors who choose “reduce motion” in their device settings.
+
 ## Forms
 
 Set `site.forms` in `build/config.mjs`:

@@ -794,14 +794,14 @@ export function contactPage() {
 
   <section class="section" id="consultation">
     <div class="container contact-layout">
-      <div class="card form-card reveal">
+      <div class="card form-card rise-in">
         ${enquiryForm(c, { id: 'contact-form' })}
       </div>
       <div class="contact-info">
-        <a class="contact-tile reveal" href="tel:${site.phoneHref}"><span class="icon-tile">${icon('phone')}</span><span><strong>Call us</strong>${esc(site.phone)}</span></a>
-        <a class="contact-tile reveal" href="${waLink()}" target="_blank" rel="noopener"><span class="icon-tile icon-tile--green">${icon('whatsapp')}</span><span><strong>WhatsApp</strong>Chat with a counsellor</span></a>
-        <a class="contact-tile reveal" href="mailto:${site.email}"><span class="icon-tile">${icon('mail')}</span><span><strong>Email</strong>${esc(site.email)}</span></a>
-        <div class="card reveal">
+        <a class="contact-tile rise-in" href="tel:${site.phoneHref}"><span class="icon-tile">${icon('phone')}</span><span><strong>Call us</strong>${esc(site.phone)}</span></a>
+        <a class="contact-tile rise-in" href="${waLink()}" target="_blank" rel="noopener"><span class="icon-tile icon-tile--green">${icon('whatsapp')}</span><span><strong>WhatsApp</strong>Chat with a counsellor</span></a>
+        <a class="contact-tile rise-in" href="mailto:${site.email}"><span class="icon-tile">${icon('mail')}</span><span><strong>Email</strong>${esc(site.email)}</span></a>
+        <div class="card rise-in">
           <h2 class="h3 with-icon">${icon('clock', 'icon icon--blue')}Office hours</h2>
           <dl class="hours">${site.hours.map((h) => `<div><dt>${esc(h.days)}</dt><dd>${esc(h.time)}</dd></div>`).join('')}</dl>
         </div>

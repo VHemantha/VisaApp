@@ -268,6 +268,7 @@ function header(c, active) {
   return `
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" data-header>
+    <div class="scroll-progress" data-progress aria-hidden="true"></div>
     <div class="container site-header__inner">
       ${logo(c)}
       <nav class="nav" aria-label="Main">
@@ -364,6 +365,22 @@ function footer(c) {
   <a class="wa-float" href="${waLink()}" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">${icon('whatsapp')}<span class="wa-float__label">Chat with us</span></a>`;
 }
 
+/* ---------- Loading screen ---------- */
+function loader() {
+  return `  <div class="loader" data-loader aria-hidden="true">
+    <div class="loader__inner">
+      <div class="loader__orbit">
+        <svg class="loader__mark" viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="#2563EB"/><path d="M20 8l3.2 8.8L32 20l-8.8 3.2L20 32l-3.2-8.8L8 20l8.8-3.2z" fill="#fff"/><circle cx="20" cy="20" r="2.6" fill="#2563EB"/></svg>
+        <span class="loader__ring"></span>
+        <span class="loader__plane">${icon('plane')}</span>
+      </div>
+      <p class="loader__brand">${esc(site.shortName)}<small>Education &amp; Migration</small></p>
+      <p class="loader__text">${esc(site.loaderText)}<span class="loader__dots"></span></p>
+      <div class="loader__bar"><span></span></div>
+    </div>
+  </div>`;
+}
+
 /* ---------- Page layout ---------- */
 export function layout(c, { title, description, path, active, body, schema = [], ogImage, bodyClass = '', noindex = false }) {
   const canonical = `${site.url}/${path}`;
@@ -399,11 +416,23 @@ export function layout(c, { title, description, path, active, body, schema = [],
   <link rel="preload" href="${c.asset('assets/fonts/plus-jakarta-sans-latin-var.woff2')}" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="${c.asset('assets/fonts/inter-latin-var.woff2')}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="${c.asset('assets/css/styles.min.css')}?v=${V.css}">
-  <script>document.documentElement.classList.add('js')</script>
+  <script>
+    /* Runs before first paint: enables JS styles and decides whether to show the loader */
+    (function (r) {
+      r.classList.add('js');
+      var mode = '${site.loader}';
+      try {
+        if (mode === 'off' || (mode === 'session' && sessionStorage.getItem('loaderSeen'))) r.classList.add('no-loader');
+        else sessionStorage.setItem('loaderSeen', '1');
+      } catch (e) {}
+      setTimeout(function () { r.classList.add('is-loaded'); }, 3000); // failsafe if main.js fails
+    })(document.documentElement);
+  </script>
   <script src="${c.asset('assets/js/main.js')}?v=${V.js}" defer></script>
   ${graph}
 </head>
 <body${bodyClass ? ` class="${bodyClass}"` : ''}>
+${site.loader === 'off' ? '' : loader()}
 ${header(c, active)}
   <main id="main">
 ${body}

@@ -1,6 +1,7 @@
 /* =========================================================================
    Lumora Education — site scripts (vanilla JS, no dependencies)
-   1. Header shadow   2. Mobile drawer   3. Desktop dropdowns
+   0. Loading screen
+   1. Header shadow + scroll progress   2. Mobile drawer   3. Desktop dropdowns
    4. Scroll reveal   5. Stat counters   6. Testimonial slider
    7. FAQ animation   8. Filters         9. Table of contents
    10. Forms (validation + Formspree / Netlify submission)
@@ -9,14 +10,49 @@
   'use strict';
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const root = document.documentElement;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* 1. Header shadow on scroll ----------------------------------------- */
+  /* 0. Loading screen ---------------------------------------------------
+     Shown for at least MIN ms (so it doesn't flash), then hidden as soon as
+     the page is ready. CSS also hides it after 4s if JS fails.
+     Scroll animations start afterwards. */
+  const onLoadedCallbacks = [];
+  const whenLoaded = (fn) => (root.classList.contains('is-loaded') && !loaderPending ? fn() : onLoadedCallbacks.push(fn));
+  const loaderEl = $('[data-loader]');
+  let loaderPending = !!loaderEl && !root.classList.contains('no-loader');
+
+  function finishLoading() {
+    if (!loaderPending && root.dataset.loaded) return;
+    loaderPending = false; root.dataset.loaded = '1';
+    root.classList.add('is-loaded');
+    if (loaderEl) { loaderEl.classList.add('is-done'); setTimeout(() => loaderEl.remove(), 700); }
+    onLoadedCallbacks.splice(0).forEach((fn) => fn());
+  }
+  if (loaderPending) {
+    // This deferred script runs once the HTML and CSS are ready, so the page
+    // can be shown now — we don't wait for every image to download.
+    const MIN = reduceMotion ? 300 : 700;
+    setTimeout(finishLoading, Math.max(0, MIN - performance.now()));
+  } else {
+    finishLoading();
+  }
+
+  /* 1. Header shadow + scroll progress bar ----------------------------- */
   const header = $('[data-header]');
+  const progress = $('[data-progress]');
   if (header) {
-    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    let ticking = false;
+    const onScroll = () => {
+      header.classList.toggle('is-scrolled', window.scrollY > 8);
+      if (progress) {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        progress.style.transform = `scaleX(${max > 0 ? Math.min(scrollY / max, 1) : 0})`;
+      }
+      ticking = false;
+    };
     onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
   }
 
   /* 2. Mobile drawer ---------------------------------------------------- */
@@ -76,7 +112,7 @@
     const io = new IntersectionObserver((entries) => {
       entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); } });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-    reveals.forEach((el) => io.observe(el));
+    whenLoaded(() => reveals.forEach((el) => io.observe(el)));
   } else {
     reveals.forEach((el) => el.classList.add('is-visible'));
   }
@@ -97,7 +133,7 @@
     const co = new IntersectionObserver((entries) => {
       entries.forEach((en) => { if (en.isIntersecting) { run(en.target); co.unobserve(en.target); } });
     }, { threshold: 0.6 });
-    counters.forEach((el) => co.observe(el));
+    whenLoaded(() => counters.forEach((el) => co.observe(el)));
   }
 
   /* 6. Testimonial slider (CSS scroll-snap + buttons) -------------------- */

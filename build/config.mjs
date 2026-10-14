@@ -59,6 +59,12 @@ export const site = {
     { value: 97, suffix: '%', label: 'Visa success rate' },
   ],
 
+  // --- Loading screen ----------------------------------------------------
+  // 'session' = show on the first page a visitor opens (recommended)
+  // 'always'  = show on every page load    'off' = never show
+  loader: 'session',
+  loaderText: 'Preparing your journey',
+
   // --- Forms -------------------------------------------------------------
   // provider: 'formspree' -> set formspreeId (https://formspree.io)
   //           'netlify'   -> uses Netlify Forms (no id needed)
