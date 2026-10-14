@@ -17,7 +17,7 @@ const destBy = (slug) => destinations.find((d) => d.slug === slug);
 const inName = (d) => (d.the ? 'the ' : '') + d.name; // "in the United Kingdom"
 
 /* ---------- Reusable sections ---------- */
-function destinationCards(c, list = destinations) {
+function destinationCards(c, list = destinations, { helpCard = false } = {}) {
   return `<div class="grid grid--3">
 ${list.map((d) => `        <a class="dest-card reveal" href="${c.href(`pages/destinations/${d.slug}/`)}">
           <div class="dest-card__media">${img(c, d.img, { ratio: [4, 3], widths: [400, 600, 800], sizes: '(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw' })}</div>
@@ -27,6 +27,12 @@ ${list.map((d) => `        <a class="dest-card reveal" href="${c.href(`pages/des
             <span class="link-arrow">Explore ${esc(d.short)} ${icon('arrow')}</span>
           </div>
         </a>`).join('\n')}
+${helpCard ? `        <a class="dest-card dest-card--help reveal" href="#consultation">
+          <span class="icon-tile">${icon('compass')}</span>
+          <h3>Not sure which country is right for you?</h3>
+          <p>Tell us your goals and budget — we’ll compare all five destinations for you, honestly and for free.</p>
+          <span class="btn btn--primary btn--sm">Get a free recommendation ${icon('arrow')}</span>
+        </a>` : ''}
       </div>`;
 }
 
@@ -67,7 +73,7 @@ function testimonialSlider(c) {
 
 function logoMarquee() {
   // PLACEHOLDER partner logos — replace with real SVG/PNG logos (with permission).
-  const cities = ['London', 'Melbourne', 'Toronto', 'Auckland', 'Boston', 'Berlin', 'Dublin', 'Sydney', 'Vancouver', 'Manchester', 'Helsinki', 'Brisbane'];
+  const cities = ['Helsinki', 'Stockholm', 'Berlin', 'Kuala Lumpur', 'Dublin', 'Tampere', 'Uppsala', 'Munich', 'Cork', 'Turku', 'Lund', 'Penang'];
   const item = (city) => `<li class="logo-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5-10-5zM6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>University<small>${city}</small></span></li>`;
   return `<div class="marquee" aria-label="Partner universities (logos coming soon)">
         <ul class="marquee__track">
@@ -135,7 +141,7 @@ export function home() {
       <div class="hero__copy">
         <p class="badge">${icon('sparkle')} Applications open for 2027 intakes</p>
         <h1>Your future abroad, <span class="text-gradient">thoughtfully planned.</span></h1>
-        <p class="hero__lead">Honest, expert guidance for Sri Lankan students — from choosing the right course to landing in the UK, Australia, Canada, New Zealand, the USA or Europe.</p>
+        <p class="hero__lead">Honest, expert guidance for Sri Lankan students — from choosing the right course to landing in Finland, Sweden, Germany, Malaysia or Ireland.</p>
         <div class="btn-row">
           ${btn('#consultation', 'Book a Free Consultation', 'primary', { iconName: 'arrow' })}
           ${btn('#destinations', 'Explore Destinations', 'outline')}
@@ -167,8 +173,8 @@ export function home() {
 
   <section class="section" id="destinations" aria-labelledby="dest-title">
     <div class="container">
-      ${sectionHead({ eyebrow: 'Study destinations', title: 'Where would you like to study?', lead: 'Six destinations, hundreds of universities and one team that knows each one inside out.', id: 'dest-title' })}
-      ${destinationCards(c)}
+      ${sectionHead({ eyebrow: 'Study destinations', title: 'Where would you like to study?', lead: 'Five carefully chosen destinations, hundreds of universities and one team that knows each one inside out.', id: 'dest-title' })}
+      ${destinationCards(c, destinations, { helpCard: true })}
     </div>
   </section>
 
@@ -214,7 +220,7 @@ ${services.map((s) => `        <article class="card service-card reveal">
 
   <section class="section section--tight" aria-labelledby="partners-title">
     <div class="container">
-      <h2 class="partners-title" id="partners-title">Trusted by <strong>150+ universities</strong> across six destinations</h2>
+      <h2 class="partners-title" id="partners-title">Trusted by <strong>150+ universities</strong> across five destinations</h2>
       ${logoMarquee()}
     </div>
   </section>
@@ -258,7 +264,7 @@ ${ctaBand(c)}`;
     path,
     html: layout(c, {
       title: 'Home', path, active: 'home',
-      description: `${site.name} is a Sri Lankan study abroad consultancy. Free counselling, university applications, scholarships and visas for the UK, Australia, Canada, New Zealand, USA and Europe.`,
+      description: `${site.name} is a Sri Lankan study abroad consultancy. Free counselling, university applications, scholarships and visas for Finland, Sweden, Germany, Malaysia and Ireland.`,
       body,
       schema: [orgSchema(), { '@type': 'WebSite', '@id': `${site.url}/#website`, url: `${site.url}/`, name: site.name, publisher: { '@id': `${site.url}/#organization` } }, faqSchema(faqs)],
     }),
@@ -362,9 +368,10 @@ export function destinationsIndex() {
   const trail = [['Destinations', path]];
   const body = `${pageHero(c, { title: 'Study destinations', lead: 'Compare the world’s most popular study destinations for Sri Lankan students — costs, intakes, work rights and post-study options.', trail, eyebrow: 'Where to study' })}
 
-  <section class="section">
+  <section class="section" aria-labelledby="all-dest-title">
     <div class="container">
-      ${destinationCards(c)}
+      <h2 class="visually-hidden" id="all-dest-title">All destinations</h2>
+      ${destinationCards(c, destinations, { helpCard: true })}
     </div>
   </section>
 
@@ -382,7 +389,7 @@ ${destinations.map((d) => `            <tr><th scope="row"><a href="${c.href(`pa
     </div>
   </section>
 ${ctaBand(c, { title: 'Not sure which country is right for you?', lead: 'Tell us about your goals and budget. We’ll compare your options honestly, side by side.' })}`;
-  return { path, html: layout(c, { title: 'Study Destinations', path, active: 'destinations', body, description: 'Compare studying in the UK, Australia, Canada, New Zealand, USA and Europe: tuition, intakes, work rights and post-study visas for Sri Lankan students.', schema: [breadcrumbSchema(trail)] }) };
+  return { path, html: layout(c, { title: 'Study Destinations', path, active: 'destinations', body, description: 'Compare studying in Finland, Sweden, Germany, Malaysia and Ireland: tuition, intakes, work rights and post-study options for Sri Lankan students.', schema: [breadcrumbSchema(trail)] }) };
 }
 
 export function destinationPage(d) {
@@ -409,9 +416,9 @@ export function destinationPage(d) {
   <div class="container">
     <ul class="quick-facts reveal">
       <li><span>${icon('calendar')}Intakes</span><strong>${d.intakes.slice(0, 2).map((i) => esc(i[0])).join(' · ')}</strong></li>
-      <li><span>${icon('wallet')}Tuition from</span><strong>${esc(d.costs[0][1].split('–')[0].trim())}</strong></li>
-      <li><span>${icon('briefcase')}Work while studying</span><strong>Yes</strong></li>
-      <li><span>${icon('award')}Post-study work</span><strong>Available</strong></li>
+      <li><span>${icon('wallet')}Tuition from</span><strong>${esc(d.tuitionFrom)}</strong></li>
+      <li><span>${icon('briefcase')}Work while studying</span><strong>${esc(d.workShort)}</strong></li>
+      <li><span>${icon('award')}Stay after study</span><strong>${esc(d.postStudy)}</strong></li>
     </ul>
   </div>
 
@@ -564,11 +571,11 @@ ${migration.map((m) => `        <article class="card reveal">
 
   <section class="section section--tight">
     <div class="container">
-      <p class="note note--box reveal">${icon('info')}<span>Migration advice for Australia must be given by a Registered Migration Agent (MARA), and for Canada by a licensed RCIC. We work alongside registered and licensed professionals for all migration matters. <!-- PLACEHOLDER: add MARN / RCIC numbers here --></span></p>
+      <p class="note note--box reveal">${icon('info')}<span>Visa and residence permit decisions are made solely by each country’s immigration authorities. We never guarantee approval — we make sure your application is complete, accurate and well prepared. Employment-based permits require a qualifying job offer or recognised qualifications.</span></p>
     </div>
   </section>
 ${ctaBand(c, { title: 'Find out if you’re eligible', lead: 'Share a few details and a migration specialist will contact you with your options.' })}`;
-  return { path, html: layout(c, { title: 'Migration & Visa Services', path, active: 'migration', body, description: 'Skilled migration to Australia, Canada and New Zealand, visitor visas, and dependant and family visas — expert guidance from Sri Lanka.', schema: [breadcrumbSchema(trail)] }) };
+  return { path, html: layout(c, { title: 'Migration & Visa Services', path, active: 'migration', body, description: 'Work and residence permits for Germany, Finland, Sweden and Ireland, Schengen and visit visas, and family visas — expert guidance from Sri Lanka.', schema: [breadcrumbSchema(trail)] }) };
 }
 
 /* =========================================================================
@@ -619,7 +626,7 @@ ${scholarships.map((s) => `        <article class="card scholarship reveal">
     </div>
   </section>
 ${ctaBand(c, { title: 'Get a personal scholarship plan', lead: 'We’ll identify awards you qualify for and help you build winning applications.' })}`;
-  return { path, html: layout(c, { title: 'Scholarships & Intakes', path, active: 'scholarships', body, description: 'Intake calendar and scholarship guide for Sri Lankan students: Chevening, Australia Awards, Fulbright, DAAD and university merit scholarships.', schema: [breadcrumbSchema(trail)] }) };
+  return { path, html: layout(c, { title: 'Scholarships & Intakes', path, active: 'scholarships', body, description: 'Intake calendar and scholarship guide for Sri Lankan students: Finnish tuition waivers, Swedish Institute, DAAD, Government of Ireland and Malaysian merit scholarships.', schema: [breadcrumbSchema(trail)] }) };
 }
 
 /* =========================================================================
@@ -653,7 +660,7 @@ export function storiesPage() {
     </div>
   </section>
 ${ctaBand(c, { title: 'Your success story starts here', lead: 'Join thousands of Sri Lankan students studying at great universities around the world.' })}`;
-  return { path, html: layout(c, { title: 'Student Success Stories', path, active: 'resources', body, description: `Read success stories from Sri Lankan students who studied in the UK, Australia, Canada, New Zealand, USA and Europe with ${site.name}.`, schema: [breadcrumbSchema(trail)] }) };
+  return { path, html: layout(c, { title: 'Student Success Stories', path, active: 'resources', body, description: `Read success stories from Sri Lankan students who studied in Finland, Sweden, Germany, Malaysia and Ireland with ${site.name}.`, schema: [breadcrumbSchema(trail)] }) };
 }
 
 /* =========================================================================
@@ -680,6 +687,7 @@ export function blogIndex() {
 
   <section class="section">
     <div class="container">
+      <h2 class="visually-hidden">Latest articles</h2>
       ${postCard(c, first, true)}
       <div class="filters" role="group" aria-label="Filter articles by category" data-filter-group="blog">
         <button class="chip chip--btn is-active" type="button" data-filter="all" aria-pressed="true">All articles</button>
@@ -752,8 +760,9 @@ export function eventsPage() {
   const ho = site.offices[0];
   const body = `${pageHero(c, { title: 'Events, fairs & webinars', lead: 'Meet university representatives, get your profile assessed on the spot and learn about scholarships — all free.', trail, eyebrow: 'Events' })}
 
-  <section class="section">
+  <section class="section" aria-labelledby="events-list-title">
     <div class="container">
+      <h2 class="visually-hidden" id="events-list-title">Upcoming events</h2>
       <div class="grid grid--2">
         ${events.map((e) => eventCard(c, e)).join('\n        ')}
       </div>

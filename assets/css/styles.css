@@ -460,6 +460,10 @@ body.no-scroll { overflow: hidden; }
 .dest-card p { color: var(--c-muted); font-size: var(--fs-sm); flex: 1; }
 .dest-card .link-arrow { margin-top: var(--sp-2); }
 
+.dest-card--help { justify-content: center; align-items: flex-start; gap: var(--sp-3); padding: var(--sp-8); background: linear-gradient(160deg, var(--c-primary-50), #fff 70%); border-style: dashed; border-color: var(--c-primary-100); }
+.dest-card--help h3 { font-size: var(--fs-xl); }
+.dest-card--help p { flex: 0; color: var(--c-muted); font-size: var(--fs-sm); }
+.dest-card--help .btn { margin-top: var(--sp-3); }
 .service-detail { display: flex; flex-direction: column; gap: var(--sp-5); }
 .service-detail h2 { margin-top: 0; }
 @media (min-width: 640px) { .service-detail { flex-direction: row; } }
@@ -511,7 +515,7 @@ body.no-scroll { overflow: hidden; }
 /* Testimonial slider */
 .slider__track {
   display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: var(--sp-6);
-  overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; padding: 4px 4px var(--sp-2);
+  overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; /* no CSS smooth-scroll here: it suppresses LCP in Chrome; JS scrollBy() animates instead */ padding: 4px 4px var(--sp-2);
 }
 .slider__track::-webkit-scrollbar { display: none; }
 .slider__slide { scroll-snap-align: start; display: flex; }

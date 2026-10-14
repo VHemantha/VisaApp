@@ -10,7 +10,7 @@ export const site = {
   shortName: 'Lumora',                          // PLACEHOLDER (used in logo)
   tagline: 'Your future abroad, thoughtfully planned.', // PLACEHOLDER [TAGLINE]
   description:
-    'Sri Lanka-based education and migration consultancy helping students study in the UK, Australia, Canada, New Zealand, the USA and Europe — free counselling, applications, scholarships and visas.',
+    'Sri Lanka-based education and migration consultancy helping students study in Finland, Sweden, Germany, Malaysia and Ireland — free counselling, applications, scholarships and visas.',
   foundedYear: 2014,                            // PLACEHOLDER
 
   // Production URL, no trailing slash. Used for canonical, OG, sitemap.
@@ -89,7 +89,7 @@ export const site = {
   },
 
   // Destinations shown in form dropdowns
-  formDestinations: ['United Kingdom', 'Australia', 'Canada', 'New Zealand', 'USA', 'Europe', 'Not sure yet'],
+  formDestinations: ['Finland', 'Sweden', 'Germany', 'Malaysia', 'Ireland', 'Not sure yet'],
   studyLevels: ['Foundation / Diploma', "Bachelor's degree", "Master's degree", 'PhD / Research', 'English language course'],
-  intakes: ['January 2027', 'February 2027', 'May 2027', 'July 2027', 'September 2027', 'Later / not sure'],
+  intakes: ['January / February 2027', 'April 2027', 'May 2027', 'August / September 2027', 'October 2027', 'Later / not sure'],
 };

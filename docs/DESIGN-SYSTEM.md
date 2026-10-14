@@ -6,10 +6,10 @@
 /                                   Home
 ├── pages/about/                    About us: story, mission, team, accreditations, offices
 ├── pages/destinations/             Destination overview + comparison table
-│   ├── uk/  australia/  canada/  new-zealand/  usa/  europe/
+│   ├── finland/  sweden/  germany/  malaysia/  ireland/
 │   │                               Country template: why, courses, costs, intakes, visa, work rights, FAQ
 ├── pages/services/                 8 detailed service cards + process
-├── pages/migration/                Skilled, visitor and dependant visas
+├── pages/migration/                Work permits, visitor (Schengen) and family visas
 ├── pages/scholarships/             Intake calendar + scholarships
 ├── pages/success-stories/          Filterable testimonials
 ├── pages/blog/                     Listing (featured + filter)

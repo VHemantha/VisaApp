@@ -3,22 +3,21 @@
   <url><loc>https://www.example.com/</loc><lastmod>2026-10-14</lastmod><priority>1.0</priority></url>
   <url><loc>https://www.example.com/pages/about/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://www.example.com/pages/destinations/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
-  <url><loc>https://www.example.com/pages/destinations/uk/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
-  <url><loc>https://www.example.com/pages/destinations/australia/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
-  <url><loc>https://www.example.com/pages/destinations/canada/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
-  <url><loc>https://www.example.com/pages/destinations/new-zealand/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
-  <url><loc>https://www.example.com/pages/destinations/usa/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
-  <url><loc>https://www.example.com/pages/destinations/europe/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/pages/destinations/finland/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/pages/destinations/sweden/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/pages/destinations/germany/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/pages/destinations/malaysia/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/pages/destinations/ireland/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
   <url><loc>https://www.example.com/pages/services/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://www.example.com/pages/migration/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://www.example.com/pages/scholarships/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://www.example.com/pages/success-stories/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://www.example.com/pages/blog/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
-  <url><loc>https://www.example.com/pages/blog/uk-vs-australia-for-sri-lankan-students/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
-  <url><loc>https://www.example.com/pages/blog/how-to-write-a-genuine-student-statement/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
-  <url><loc>https://www.example.com/pages/blog/scholarships-you-can-apply-for-now/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
-  <url><loc>https://www.example.com/pages/blog/canada-study-permit-checklist/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
-  <url><loc>https://www.example.com/pages/blog/studying-in-germany-on-a-budget/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/pages/blog/finland-vs-sweden-for-sri-lankan-students/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/pages/blog/germany-blocked-account-explained/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/pages/blog/finland-joint-application-guide/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/pages/blog/studying-in-malaysia-transfer-programmes/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://www.example.com/pages/blog/ireland-stamp-1g-stay-back/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
   <url><loc>https://www.example.com/pages/blog/pre-departure-checklist/</loc><lastmod>2026-10-14</lastmod><priority>0.6</priority></url>
   <url><loc>https://www.example.com/pages/events/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>
   <url><loc>https://www.example.com/pages/contact/</loc><lastmod>2026-10-14</lastmod><priority>0.8</priority></url>

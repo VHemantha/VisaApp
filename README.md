@@ -29,6 +29,8 @@ The HTML pages are **generated**. To change anything:
 
 To add a blog post, append an object to `posts` in `content.mjs` and rebuild. The listing, article page, related posts and sitemap all update automatically. Destinations and events work the same way.
 
+Destinations currently offered: **Finland, Sweden, Germany, Malaysia and Ireland**. If you **remove** a destination or post, also delete its old folder under `pages/` (the build writes new files but doesn't delete old ones), and update `formDestinations` in `config.mjs`.
+
 ## Before going live: replace every placeholder
 
 Search the `build/` folder for `PLACEHOLDER`:
@@ -38,7 +40,7 @@ Search the `build/` folder for `PLACEHOLDER`:
 - [ ] Production URL (`site.url`), used for canonical links, Open Graph and the sitemap
 - [ ] Stats and accreditations: **use only figures and accreditations you can substantiate**
 - [ ] Testimonials (sample content; replace with real reviews, with the students' consent)
-- [ ] Team names and bios, partner university logos, MARA/RCIC numbers on the Migration page
+- [ ] Team names and bios, partner university logos
 - [ ] Social profile links
 - [ ] Privacy policy (have it reviewed under Sri Lanka's PDPA)
 - [ ] `assets/images/logo.svg`, `favicon.svg`, `apple-touch-icon.png`, `og-image.jpg`
