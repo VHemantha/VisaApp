@@ -149,7 +149,7 @@ export function home() {
         <ul class="hero__points">
           <li>${icon('checkCircle')}No-obligation advice</li>
           <li>${icon('checkCircle')}Transparent fees</li>
-          <li>${icon('checkCircle')}Colombo · Kandy · Kurunegala</li>
+          <li>${icon('checkCircle')}Visit us in Nittambuwa</li>
         </ul>
       </div>
       <div class="hero__media">
@@ -285,7 +285,7 @@ export function about() {
       <div class="split__copy">
         ${sectionHead({ eyebrow: 'Our story', title: 'Started by students, for students' })}
         <div class="prose reveal">
-          <p>${esc(site.name)} began when our founder — after navigating a confusing, expensive study abroad process themselves — decided Sri Lankan families deserved better. What started as a small office in Colombo has grown into a team of certified counsellors across three branches.</p>
+          <p>${esc(site.name)} began when our founder — after navigating a confusing, expensive study abroad process themselves — decided Sri Lankan families deserved better. From our office in Nittambuwa, our team of certified counsellors supports students from across Gampaha District and the whole of Sri Lanka — in person, by phone or online.</p>
           <p>Today we help thousands of students each year choose the right course, secure scholarships and obtain visas, while keeping the personal, transparent service we started with.</p>
         </div>
       </div>
@@ -338,16 +338,17 @@ ${team.map((m) => `        <article class="card team-card reveal">
 
   <section class="section" aria-labelledby="offices-title">
     <div class="container">
-      ${sectionHead({ eyebrow: 'Visit us', title: 'Our offices', center: true, id: 'offices-title' })}
+      ${sectionHead({ eyebrow: 'Visit us', title: 'Our office', center: true, id: 'offices-title' })}
       ${officeCards(c)}
     </div>
   </section>
 ${ctaBand(c)}`;
-  return { path, html: layout(c, { title: 'About Us', path, active: 'about', body, description: `Meet the team behind ${site.name}: certified study abroad counsellors with offices in Colombo, Kandy and Kurunegala.`, schema: [orgSchema(), breadcrumbSchema(trail)] }) };
+  return { path, html: layout(c, { title: 'About Us', path, active: 'about', body, description: `Meet the team behind ${site.name}: certified study abroad counsellors based in Nittambuwa, Sri Lanka.`, schema: [orgSchema(), breadcrumbSchema(trail)] }) };
 }
 
 function officeCards(c) {
-  return `<div class="grid grid--3">
+  // One office: a single centred card. Several: a 3-column grid.
+  return `<div class="grid ${site.offices.length === 1 ? 'office-single' : 'grid--3'}">
 ${site.offices.map((o) => `        <article class="card office-card reveal">
           <h3>${esc(o.name)}</h3>
           <ul class="meta meta--stack">
@@ -778,7 +779,7 @@ ${ctaBand(c, { title: 'Can’t make an event?', lead: 'Book a one-to-one consult
     organizer: { '@id': `${site.url}/#organization` },
     isAccessibleForFree: true,
   }));
-  return { path, html: layout(c, { title: 'Education Fairs, Webinars & Events', path, active: 'resources', body, description: 'Upcoming study abroad fairs, webinars, workshops and open days in Colombo, Kandy, Kurunegala and online.', schema: [breadcrumbSchema(trail), ...eventSchema] }) };
+  return { path, html: layout(c, { title: 'Education Fairs, Webinars & Events', path, active: 'resources', body, description: 'Upcoming study abroad fairs, webinars, workshops and open days in Nittambuwa and online.', schema: [breadcrumbSchema(trail), ...eventSchema] }) };
 }
 
 /* =========================================================================
@@ -789,7 +790,7 @@ export function contactPage() {
   const c = ctx(depthOf(path));
   const trail = [['Contact', path]];
   const ho = site.offices[0];
-  const body = `${pageHero(c, { title: 'Let’s plan your future', lead: 'Book a free consultation, ask a question or visit one of our offices. We reply within one working day.', trail, eyebrow: 'Contact us' })}
+  const body = `${pageHero(c, { title: 'Let’s plan your future', lead: 'Book a free consultation, ask a question or visit our office in Nittambuwa. We reply within one working day.', trail, eyebrow: 'Contact us' })}
 
   <section class="section" id="consultation">
     <div class="container contact-layout">
@@ -810,7 +811,7 @@ export function contactPage() {
 
   <section class="section section--alt" aria-labelledby="map-title">
     <div class="container">
-      ${sectionHead({ eyebrow: 'Find us', title: 'Our offices', id: 'map-title' })}
+      ${sectionHead({ eyebrow: 'Find us', title: 'Our office', id: 'map-title' })}
       <div class="map reveal">
         <iframe title="Map showing ${esc(ho.name)}" src="https://www.google.com/maps?q=${encodeURIComponent(ho.mapQuery)}&amp;output=embed" width="1200" height="420" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
       </div>
@@ -821,7 +822,7 @@ export function contactPage() {
     path,
     html: layout(c, {
       title: 'Contact Us — Book a Free Consultation', path, active: 'contact', body,
-      description: `Contact ${site.name}: call ${site.phone}, WhatsApp or email us, or visit our offices in Colombo, Kandy and Kurunegala. Free study abroad consultation.`,
+      description: `Contact ${site.name}: call ${site.phone}, WhatsApp or email us, or visit our office in Nittambuwa. Free study abroad consultation.`,
       schema: [breadcrumbSchema(trail), orgSchema(), ...site.offices.slice(1).map((o) => ({ '@type': 'LocalBusiness', name: `${site.name} — ${o.name}`, telephone: o.phone.replace(/\s/g, ''), parentOrganization: { '@id': `${site.url}/#organization` }, address: { '@type': 'PostalAddress', streetAddress: o.street, addressLocality: o.city, addressRegion: o.region, postalCode: o.postcode, addressCountry: o.country } }))],
     }),
   };

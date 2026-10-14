@@ -379,7 +379,7 @@ export function layout(c, { title, description, path, active, body, schema = [],
   <meta name="description" content="${esc(description)}">
   <link rel="canonical" href="${canonical}">
   ${noindex ? '<meta name="robots" content="noindex">' : ''}
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#fff9e0">
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="${esc(site.name)}">

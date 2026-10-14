@@ -177,10 +177,10 @@ export const testimonials = [
 
 /* ---------- Events ---------- */
 export const events = [
-  { date: '2026-11-07', time: '10.00 am – 4.00 pm', type: 'Education fair', title: 'European Study Expo 2026 — Colombo', place: 'Colombo (venue TBC)', desc: 'Meet representatives from universities in Finland, Sweden, Germany and Ireland. On-the-spot profile assessments and scholarship advice.', img: 'conference' },
+  { date: '2026-11-07', time: '10.00 am – 4.00 pm', type: 'Education fair', title: 'European Study Expo 2026 — Nittambuwa', place: 'Nittambuwa (venue TBC)', desc: 'Meet representatives from universities in Finland, Sweden, Germany and Ireland. On-the-spot profile assessments and scholarship advice.', img: 'conference' },
   { date: '2026-11-19', time: '7.00 pm – 8.00 pm', type: 'Webinar', title: 'Finland joint application 2027: how to prepare', place: 'Online (Zoom)', desc: 'Programmes, entrance exams, scholarships and residence permits for the autumn 2027 intake — before applications open in January.', img: 'seminar' },
-  { date: '2026-12-05', time: '9.30 am – 1.00 pm', type: 'Workshop', title: 'Germany & Sweden application workshop', place: 'Kandy Branch', desc: 'Hands-on help with University Admissions (Sweden), uni-assist (Germany), blocked accounts and motivation letters.', img: 'workshop' },
-  { date: '2027-01-16', time: '10.00 am – 3.00 pm', type: 'Open day', title: 'Malaysia & Ireland intake open day', place: 'Kurunegala Branch', desc: 'Free profile assessments, IELTS/PTE guidance and application fee waivers on the day.', img: 'networking' },
+  { date: '2026-12-05', time: '9.30 am – 1.00 pm', type: 'Workshop', title: 'Germany & Sweden application workshop', place: 'Nittambuwa Office', desc: 'Hands-on help with University Admissions (Sweden), uni-assist (Germany), blocked accounts and motivation letters.', img: 'workshop' },
+  { date: '2027-01-16', time: '10.00 am – 3.00 pm', type: 'Open day', title: 'Malaysia & Ireland intake open day', place: 'Nittambuwa Office', desc: 'Free profile assessments, IELTS/PTE guidance and application fee waivers on the day.', img: 'networking' },
 ];
 
 /* ---------- Intakes & scholarships ---------- */

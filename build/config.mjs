@@ -28,38 +28,18 @@ export const site = {
     { days: 'Sunday & Poya days', time: 'Closed (WhatsApp open)' },
   ],
 
-  // First office = head office (used in LocalBusiness schema)
+  // Office location(s). The first office is used in LocalBusiness schema.
   offices: [
     {
-      name: 'Colombo — Head Office',
-      street: 'Level 4, 123 Galle Road',        // PLACEHOLDER [ADDRESS]
-      city: 'Colombo 03',
+      name: 'Nittambuwa Office',
+      street: 'Kandy Road',                     // PLACEHOLDER [ADDRESS] — add building / number
+      city: 'Nittambuwa',
       region: 'Western Province',
-      postcode: '00300',
+      postcode: '11880',
       country: 'LK',
-      phone: '+94 70 000 0000',
-      mapQuery: 'Galle Road, Colombo 03, Sri Lanka',
-      geo: { lat: 6.9022, lng: 79.8530 },
-    },
-    {
-      name: 'Kandy Branch',
-      street: '45 Peradeniya Road',             // PLACEHOLDER
-      city: 'Kandy',
-      region: 'Central Province',
-      postcode: '20000',
-      country: 'LK',
-      phone: '+94 70 000 0001',
-      mapQuery: 'Peradeniya Road, Kandy, Sri Lanka',
-    },
-    {
-      name: 'Kurunegala Branch',
-      street: '12 Colombo Road',                // PLACEHOLDER
-      city: 'Kurunegala',
-      region: 'North Western Province',
-      postcode: '60000',
-      country: 'LK',
-      phone: '+94 70 000 0002',
-      mapQuery: 'Colombo Road, Kurunegala, Sri Lanka',
+      phone: '+94 70 000 0000',                 // PLACEHOLDER
+      mapQuery: 'Nittambuwa, Sri Lanka',        // PLACEHOLDER — use your exact address for the map
+      geo: { lat: 7.1440, lng: 80.0960 },       // approx. Nittambuwa town centre — update to exact location
     },
   ],
 

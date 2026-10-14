@@ -26,8 +26,9 @@
 
 | Token | Hex | Use |
 |---|---|---|
-| `--c-bg` | `#FFFFFF` | Page background |
-| `--c-bg-alt` | `#F8FAFC` | Alternate sections, footer |
+| `--c-bg` | `#FFF9E0` | Light yellow page background |
+| `--c-bg-alt` | `#FFF3C4` | Deeper yellow for alternate sections, footer |
+| `--c-surface` | `#FFFDF2` | Warm near-white for cards, inputs, header, menus |
 | `--c-primary` | `#2563EB` | Primary buttons, links, icons (5.2:1 with white) |
 | `--c-primary-600 / 700` | `#1D4ED8` / `#1E40AF` | Hover, CTA gradient, badge text |
 | `--c-primary-50 / 100` | `#EFF6FF` / `#DBEAFE` | Icon tiles, badges, tints |
@@ -35,7 +36,7 @@
 | `--c-teal` | `#0F766E` | Check icons, success badges (AA on white) |
 | `--c-text` | `#0F172A` | Headings and body |
 | `--c-muted` | `#475569` | Secondary text (7.5:1 on white) |
-| `--c-border` | `#E2E8F0` | Card and table borders |
+| `--c-border` | `#EEE2B6` | Warm card and table borders |
 
 ## Typography
 
