@@ -240,9 +240,9 @@ export const nav = [
   { label: 'Contact', key: 'contact', path: 'pages/contact/' },
 ];
 
+// Logo image (assets/images/logo.webp|png, 396×144 — displayed ~44px tall)
 export const logo = (c) => `<a class="logo" href="${c.href('')}">
-        <svg class="logo__mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#2563EB"/><path d="M20 8l3.2 8.8L32 20l-8.8 3.2L20 32l-3.2-8.8L8 20l8.8-3.2z" fill="#fff"/><circle cx="20" cy="20" r="2.6" fill="#2563EB"/></svg>
-        <span class="logo__text">${esc(site.shortName)}<small>Education &amp; Migration</small></span>
+        <picture><source srcset="${c.asset('assets/images/logo.webp')}" type="image/webp"><img class="logo__img" src="${c.asset('assets/images/logo.png')}" width="396" height="144" alt="${esc(site.name)} — home"></picture>
       </a>`;
 
 function header(c, active) {
@@ -366,15 +366,15 @@ function footer(c) {
 }
 
 /* ---------- Loading screen ---------- */
-function loader() {
+function loader(c) {
   return `  <div class="loader" data-loader aria-hidden="true">
     <div class="loader__inner">
       <div class="loader__orbit">
-        <svg class="loader__mark" viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="#2563EB"/><path d="M20 8l3.2 8.8L32 20l-8.8 3.2L20 32l-3.2-8.8L8 20l8.8-3.2z" fill="#fff"/><circle cx="20" cy="20" r="2.6" fill="#2563EB"/></svg>
+        <img class="loader__mark" src="${c.asset('assets/images/logo-mark.png')}" width="256" height="256" alt="">
         <span class="loader__ring"></span>
         <span class="loader__plane">${icon('plane')}</span>
       </div>
-      <p class="loader__brand">${esc(site.shortName)}<small>Education &amp; Migration</small></p>
+      <img class="loader__logo" src="${c.asset('assets/images/logo.png')}" width="396" height="144" alt="">
       <p class="loader__text">${esc(site.loaderText)}<span class="loader__dots"></span></p>
       <div class="loader__bar"><span></span></div>
     </div>
@@ -409,7 +409,9 @@ export function layout(c, { title, description, path, active, body, schema = [],
   <meta property="og:locale" content="en_GB">
   <meta name="twitter:card" content="summary_large_image">
   <!-- Icons -->
-  <link rel="icon" href="${c.asset('assets/images/favicon.svg')}" type="image/svg+xml">
+  <link rel="icon" href="${c.asset('assets/images/favicon.ico')}" sizes="48x48">
+  <link rel="icon" href="${c.asset('assets/images/favicon-32.png')}" type="image/png" sizes="32x32">
+  <link rel="icon" href="${c.asset('assets/images/favicon-192.png')}" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="${c.asset('assets/images/apple-touch-icon.png')}">
   <!-- Performance: early image connection, preloaded self-hosted fonts, minified CSS -->
   <link rel="preconnect" href="https://images.unsplash.com">
@@ -432,7 +434,7 @@ export function layout(c, { title, description, path, active, body, schema = [],
   ${graph}
 </head>
 <body${bodyClass ? ` class="${bodyClass}"` : ''}>
-${site.loader === 'off' ? '' : loader()}
+${site.loader === 'off' ? '' : loader(c)}
 ${header(c, active)}
   <main id="main">
 ${body}
@@ -453,7 +455,7 @@ export function orgSchema() {
     legalName: site.legalName,
     description: site.description,
     url: `${site.url}/`,
-    logo: `${site.url}/assets/images/logo.svg`,
+    logo: `${site.url}/assets/images/logo-large.png`,
     image: `${site.url}/assets/images/og-image.jpg`,
     telephone: site.phoneHref,
     email: site.email,

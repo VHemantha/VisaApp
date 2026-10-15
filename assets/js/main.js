@@ -1,5 +1,5 @@
 /* =========================================================================
-   Lumora Education — site scripts (vanilla JS, no dependencies)
+   Prestige Migrations — site scripts (vanilla JS, no dependencies)
    0. Loading screen
    1. Header shadow + scroll progress   2. Mobile drawer   3. Desktop dropdowns
    4. Scroll reveal   5. Stat counters   6. Testimonial slider

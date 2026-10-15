@@ -5,9 +5,9 @@
 
 export const site = {
   // --- Brand -------------------------------------------------------------
-  name: 'Lumora Education',                     // PLACEHOLDER [BRAND NAME]
-  legalName: 'Lumora Education & Migration (Pvt) Ltd', // PLACEHOLDER
-  shortName: 'Lumora',                          // PLACEHOLDER (used in logo)
+  name: 'Prestige Migrations',
+  legalName: 'Prestige Migrations (Pvt) Ltd',  // PLACEHOLDER — confirm registered company name
+  shortName: 'Prestige',                        // logo image: assets/images/logo.png
   tagline: 'Your future abroad, thoughtfully planned.', // PLACEHOLDER [TAGLINE]
   description:
     'Sri Lanka-based education and migration consultancy helping students study in Finland, Sweden, Germany, Malaysia and Ireland — free counselling, applications, scholarships and visas.',

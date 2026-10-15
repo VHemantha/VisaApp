@@ -1,4 +1,4 @@
-# Lumora Education: study abroad website
+# Prestige Migrations: study abroad website
 
 A fast, accessible static website for a Sri Lankan education and migration consultancy. It uses semantic HTML, modern CSS and about 4 KB (gzipped) of vanilla JS, with no frameworks and no backend.
 
@@ -43,7 +43,7 @@ Search the `build/` folder for `PLACEHOLDER`:
 - [ ] Team names and bios, partner university logos
 - [ ] Social profile links
 - [ ] Privacy policy (have it reviewed under Sri Lanka's PDPA)
-- [ ] `assets/images/logo.svg`, `favicon.svg`, `apple-touch-icon.png`, `og-image.jpg`
+- [x] Logo and favicons added from `assets/images/logo-original.jpg` (`logo.png/.webp`, `logo-large.png`, `logo-mark.png`, `favicon.ico`, `favicon-32/192/512.png`, `apple-touch-icon.png`, `og-image.jpg`)
 - [ ] Optional: replace Unsplash photos with your own. Put WebP files in `assets/images/` and use the path as the image key in `content.mjs`
 
 Destination costs and visa rules are **indicative 2026 figures**. Review them each intake.
