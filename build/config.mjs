@@ -11,7 +11,7 @@ export const site = {
   tagline: 'Your future abroad, thoughtfully planned.', // PLACEHOLDER [TAGLINE]
   description:
     'Sri Lanka-based education and migration consultancy helping students study in Finland, Sweden, Germany, Malaysia and Ireland — free counselling, applications, scholarships and visas.',
-  foundedYear: 2014,                            // PLACEHOLDER
+  foundedYear: 2024,                            // matches 2+ years of experience
 
   // Production URL, no trailing slash. Used for canonical, OG, sitemap.
   url: 'https://www.example.com',               // PLACEHOLDER
@@ -51,9 +51,9 @@ export const site = {
 
   // --- Trust strip (PLACEHOLDER — use only figures you can substantiate) --
   stats: [
-    { value: 12, suffix: '+', label: 'Years of experience' },
-    { value: 4500, suffix: '+', label: 'Students placed' },
-    { value: 150, suffix: '+', label: 'Partner universities' },
+    { value: 2, suffix: '+', label: 'Years of experience' },
+    { value: 144, suffix: '+', label: 'Students placed' },
+    { value: 50, suffix: '+', label: 'Partner universities' },
     { value: 97, suffix: '%', label: 'Visa success rate' },
   ],
 

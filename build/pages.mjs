@@ -220,7 +220,7 @@ ${services.map((s) => `        <article class="card service-card reveal">
 
   <section class="section section--tight" aria-labelledby="partners-title">
     <div class="container">
-      <h2 class="partners-title" id="partners-title">Trusted by <strong>150+ universities</strong> across five destinations</h2>
+      <h2 class="partners-title" id="partners-title">Trusted by <strong>50+ universities</strong> across five destinations</h2>
       ${logoMarquee()}
     </div>
   </section>
@@ -286,7 +286,7 @@ export function about() {
         ${sectionHead({ eyebrow: 'Our story', title: 'Started by students, for students' })}
         <div class="prose reveal">
           <p>${esc(site.name)} began when our founder — after navigating a confusing, expensive study abroad process themselves — decided Sri Lankan families deserved better. From our office in Nittambuwa, our team of certified counsellors supports students from across Gampaha District and the whole of Sri Lanka — in person, by phone or online.</p>
-          <p>Today we help thousands of students each year choose the right course, secure scholarships and obtain visas, while keeping the personal, transparent service we started with.</p>
+          <p>Today we help students from across Sri Lanka choose the right course, secure scholarships and obtain visas, while keeping the personal, transparent service we started with.</p>
         </div>
       </div>
       <div class="split__media reveal">${img(c, 'studentsGroup', { ratio: [4, 3], widths: [480, 800, 1100], sizes: '(min-width: 1024px) 560px, 100vw' })}</div>
@@ -660,7 +660,7 @@ export function storiesPage() {
       </div>
     </div>
   </section>
-${ctaBand(c, { title: 'Your success story starts here', lead: 'Join thousands of Sri Lankan students studying at great universities around the world.' })}`;
+${ctaBand(c, { title: 'Your success story starts here', lead: 'Join the 144+ Sri Lankan students we have already helped to study at great universities abroad.' })}`;
   return { path, html: layout(c, { title: 'Student Success Stories', path, active: 'resources', body, description: `Read success stories from Sri Lankan students who studied in Finland, Sweden, Germany, Malaysia and Ireland with ${site.name}.`, schema: [breadcrumbSchema(trail)] }) };
 }
 
