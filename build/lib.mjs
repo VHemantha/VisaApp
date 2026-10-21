@@ -170,56 +170,20 @@ export function pageHero(c, { title, lead, trail, eyebrow, actions = '' }) {
   </section>`;
 }
 
-/* ---------- Enquiry form ---------- */
-const opt = (list, ph) => `<option value="">${ph}</option>` + list.map((v) => `<option>${esc(v)}</option>`).join('');
-
-export function enquiryForm(c, { id = 'enquiry', title = 'Book your free consultation', compact = false, preselect } = {}) {
-  const f = site.forms;
-  const isNetlify = f.provider === 'netlify';
-  const action = isNetlify ? c.href('pages/thank-you/') : `https://formspree.io/f/${f.formspreeId}`;
-  const netlifyAttrs = isNetlify ? ` name="${id}" data-netlify="true" netlify-honeypot="bot-field"` : '';
-  const dest = site.formDestinations.map((d) => `<option${d === preselect ? ' selected' : ''}>${esc(d)}</option>`).join('');
-  return `<form class="form${compact ? ' form--compact' : ''}" id="${id}" action="${action}" method="POST" novalidate data-provider="${f.provider}" data-form-name="${id}"${netlifyAttrs}>
-          ${title ? `<h2 class="form__title">${esc(title)}</h2>` : ''}
-          ${isNetlify ? `<input type="hidden" name="form-name" value="${id}">` : '<input type="hidden" name="_subject" value="New enquiry from website">'}
-          <p class="visually-hidden" aria-hidden="true"><label>Leave this empty <input name="${isNetlify ? 'bot-field' : '_gotcha'}" tabindex="-1" autocomplete="off"></label></p>
-          <div class="form__grid">
-            <div class="field">
-              <label for="${id}-name">Full name <span aria-hidden="true">*</span></label>
-              <input id="${id}-name" name="name" type="text" autocomplete="name" required minlength="2">
-              <p class="field__error" id="${id}-name-err" aria-live="polite"></p>
-            </div>
-            <div class="field">
-              <label for="${id}-email">Email <span aria-hidden="true">*</span></label>
-              <input id="${id}-email" name="email" type="email" autocomplete="email" required>
-              <p class="field__error" id="${id}-email-err" aria-live="polite"></p>
-            </div>
-            <div class="field">
-              <label for="${id}-phone">Phone / WhatsApp <span aria-hidden="true">*</span></label>
-              <input id="${id}-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+94 7X XXX XXXX" required pattern="^[+0-9 ()-]{9,18}$">
-              <p class="field__error" id="${id}-phone-err" aria-live="polite"></p>
-            </div>
-            <div class="field">
-              <label for="${id}-destination">Preferred destination</label>
-              <select id="${id}-destination" name="destination"><option value="">Select a destination</option>${dest}</select>
-            </div>
-            ${compact ? '' : `<div class="field">
-              <label for="${id}-level">Study level</label>
-              <select id="${id}-level" name="study_level">${opt(site.studyLevels, 'Select a level')}</select>
-            </div>
-            <div class="field">
-              <label for="${id}-intake">Preferred intake</label>
-              <select id="${id}-intake" name="intake">${opt(site.intakes, 'Select an intake')}</select>
-            </div>`}
-            <div class="field field--full">
-              <label for="${id}-message">Message</label>
-              <textarea id="${id}-message" name="message" rows="${compact ? 3 : 4}" placeholder="Tell us about your goals, qualifications or questions"></textarea>
-            </div>
-          </div>
-          <button class="btn btn--primary btn--block" type="submit">Request free consultation ${icon('arrow')}</button>
-          <p class="form__note">We reply within one working day. By submitting, you agree to our <a href="${c.href('pages/privacy/')}">privacy policy</a>.</p>
-          <div class="form__status" role="status" aria-live="polite"></div>
-        </form>`;
+/* ---------- Contact card (WhatsApp-first, replaces the old enquiry form) ---------- */
+export function contactCard(c, { heading = 'h3', title = 'Talk to a counsellor today', message } = {}) {
+  const ho = site.offices[0];
+  return `<div class="contact-card">
+          <${heading} class="contact-card__title">${esc(title)}</${heading}>
+          <p class="contact-card__lead">Message us on WhatsApp for the fastest reply. Tell us your qualifications, budget and preferred country, and a counsellor will get back to you with your options.</p>
+          <a class="btn btn--wa btn--block btn--lg" href="${waLink(message)}" target="_blank" rel="noopener">${icon('whatsapp')} Chat on WhatsApp</a>
+          <a class="btn btn--outline btn--block" href="tel:${site.phoneHref}">${icon('phone')} Call ${esc(site.phone)}</a>
+          <ul class="contact-card__meta">
+            <li>${icon('pin')}<span>${esc(ho.street)}, ${esc(ho.city)}</span></li>
+            <li>${icon('clock')}<span>${esc(site.hours[0].days)}: ${esc(site.hours[0].time)}</span></li>
+            <li>${icon('mail')}<a href="mailto:${site.email}">${esc(site.email)}</a></li>
+          </ul>
+        </div>`;
 }
 
 /* ---------- Navigation ---------- */

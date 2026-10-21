@@ -205,10 +205,6 @@
   }
 
   /* 10. Forms ----------------------------------------------------------- */
-  // Prefill message from ?event=… (events page "Reserve a seat" links)
-  const ev = new URLSearchParams(location.search).get('event');
-  if (ev) { const m = $('#contact-form-message'); if (m) m.value = `I'd like to reserve a seat at: ${ev}`; }
-
   const messages = {
     valueMissing: 'This field is required.',
     typeMismatch: 'Please enter a valid email address.',

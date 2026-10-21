@@ -644,6 +644,19 @@ body.no-scroll { overflow: hidden; }
 .form__status.is-error { background: #fef2f2; color: var(--c-error); }
 .form [type="submit"][disabled] { opacity: .7; cursor: progress; }
 .form-card { padding: var(--sp-8) var(--sp-6); box-shadow: var(--shadow-lg); }
+/* Contact card (WhatsApp-first) */
+.contact-card { display: grid; gap: var(--sp-3); }
+.contact-card__title { font-size: var(--fs-xl); }
+.contact-card__lead { margin: 0 0 var(--sp-3); color: var(--c-muted); font-size: var(--fs-sm); }
+.contact-card__meta { display: grid; gap: var(--sp-3); margin-top: var(--sp-4); padding-top: var(--sp-5); border-top: 1px solid var(--c-border); font-size: var(--fs-sm); color: var(--c-muted); }
+.contact-card__meta li { display: flex; gap: var(--sp-3); align-items: flex-start; overflow-wrap: anywhere; }
+.contact-card__meta .icon { width: 18px; height: 18px; margin-top: 2px; color: var(--c-primary); }
+.contact-card__meta a { color: inherit; }
+.btn--wa { --btn-bg: #15803d; --btn-fg: #fff; box-shadow: 0 8px 20px -6px rgb(21 128 61 / .45); position: relative; overflow: hidden; isolation: isolate; }
+.btn--wa:hover { --btn-bg: #166534; }
+.btn--wa::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / .3) 50%, transparent 70%); transform: translateX(-120%); transition: transform .7s var(--ease); }
+.btn--wa:hover::after { transform: translateX(120%); }
+.btn--lg { min-height: 56px; font-size: 1.0625rem; }
 @media (min-width: 768px) { .form-card { padding: var(--sp-10); } }
 
 /* 9. PAGE SECTIONS ------------------------------------------------------ */

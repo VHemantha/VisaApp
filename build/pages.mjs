@@ -9,7 +9,7 @@ import {
 } from './content.mjs';
 import {
   esc, ctx, icon, img, flag, breadcrumbs, initials, sectionHead, btn, pageHero, faqList, faqSchema,
-  breadcrumbSchema, enquiryForm, layout, orgSchema, waLink, fmtDate,
+  breadcrumbSchema, contactCard, layout, orgSchema, waLink, fmtDate,
 } from './lib.mjs';
 
 const depthOf = (path) => (path === '' ? 0 : path.split('/').filter(Boolean).length);
@@ -98,7 +98,7 @@ function eventCard(c, e) {
                 <li>${icon('pin')}${esc(e.place)}</li>
               </ul>
               <p>${esc(e.desc)}</p>
-              <a class="link-arrow" href="${c.href('pages/contact/')}?event=${encodeURIComponent(e.title)}#consultation">Reserve a free seat ${icon('arrow')}</a>
+              <a class="link-arrow" href="${waLink(`Hi! I'd like to reserve a free seat at: ${e.title} (${fmtDate(e.date)})`)}" target="_blank" rel="noopener">Reserve a free seat on WhatsApp ${icon('arrow')}</a>
             </div>
           </div>
         </article>`;
@@ -123,7 +123,7 @@ function ctaBand(c, { title = 'Ready to start your journey?', lead = 'Book a fre
         </div>
       </div>
       <div class="card form-card reveal">
-        ${enquiryForm(c, { id: 'cta-form', preselect })}
+        ${contactCard(c, { message: preselect ? `Hi! I'd like a free consultation about studying in ${preselect}.` : undefined })}
       </div>
     </div>
   </section>`;
@@ -790,17 +790,17 @@ export function contactPage() {
   const c = ctx(depthOf(path));
   const trail = [['Contact', path]];
   const ho = site.offices[0];
-  const body = `${pageHero(c, { title: 'Let’s plan your future', lead: 'Book a free consultation, ask a question or visit our office in Nittambuwa. We reply within one working day.', trail, eyebrow: 'Contact us' })}
+  const body = `${pageHero(c, { title: 'Let’s plan your future', lead: 'Message us on WhatsApp, give us a call or visit our office in Nittambuwa. We usually reply within a few hours.', trail, eyebrow: 'Contact us' })}
 
   <section class="section" id="consultation">
     <div class="container contact-layout">
       <div class="card form-card rise-in">
-        ${enquiryForm(c, { id: 'contact-form' })}
+        ${contactCard(c, { heading: 'h2', title: 'Book your free consultation' })}
       </div>
       <div class="contact-info">
-        <a class="contact-tile rise-in" href="tel:${site.phoneHref}"><span class="icon-tile">${icon('phone')}</span><span><strong>Call us</strong>${esc(site.phone)}</span></a>
-        <a class="contact-tile rise-in" href="${waLink()}" target="_blank" rel="noopener"><span class="icon-tile icon-tile--green">${icon('whatsapp')}</span><span><strong>WhatsApp</strong>Chat with a counsellor</span></a>
+        <a class="contact-tile rise-in" href="${waLink()}" target="_blank" rel="noopener"><span class="icon-tile icon-tile--green">${icon('whatsapp')}</span><span><strong>WhatsApp</strong>${esc(site.phone)}</span></a>
         <a class="contact-tile rise-in" href="mailto:${site.email}"><span class="icon-tile">${icon('mail')}</span><span><strong>Email</strong>${esc(site.email)}</span></a>
+        <a class="contact-tile rise-in" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(ho.mapQuery)}" target="_blank" rel="noopener"><span class="icon-tile">${icon('pin')}</span><span><strong>Visit us</strong>${esc(ho.street)}, ${esc(ho.city)}</span></a>
         <div class="card rise-in">
           <h2 class="h3 with-icon">${icon('clock', 'icon icon--blue')}Office hours</h2>
           <dl class="hours">${site.hours.map((h) => `<div><dt>${esc(h.days)}</dt><dd>${esc(h.time)}</dd></div>`).join('')}</dl>
@@ -838,8 +838,8 @@ export function thankYouPage() {
   <section class="section center-page">
     <div class="container container--narrow">
       <span class="icon-tile icon-tile--lg">${icon('checkCircle')}</span>
-      <h1>Thank you — we’ve received your enquiry</h1>
-      <p class="lead">A counsellor will contact you within one working day. Need an answer sooner? Message us on WhatsApp.</p>
+      <h1>Thank you — you’re subscribed</h1>
+      <p class="lead">We’ll send you intake alerts and scholarship news. Have a question now? Message us on WhatsApp.</p>
       <div class="btn-row btn-row--center">
         ${btn(c.href(''), 'Back to home', 'outline')}
         ${btn(waLink(), `${icon('whatsapp')} Chat on WhatsApp`, 'primary', { attrs: 'target="_blank" rel="noopener"' })}
@@ -858,7 +858,7 @@ export function privacyPage() {
     <div class="container container--narrow prose">
       <p><em>PLACEHOLDER — have this reviewed against Sri Lanka’s Personal Data Protection Act (PDPA) No. 9 of 2022 before going live.</em></p>
       <h2>What we collect</h2>
-      <p>When you submit a form, we collect the details you provide: your name, email, phone number, study preferences and message.</p>
+      <p>When you contact us by WhatsApp, phone or email, or subscribe to updates, we collect the details you share with us, such as your name, phone number, email and study preferences.</p>
       <h2>How we use it</h2>
       <p>We use your information only to respond to your enquiry, provide our counselling services and, if you subscribe, send intake and scholarship updates. We never sell your data.</p>
       <h2>Sharing</h2>

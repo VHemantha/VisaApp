@@ -17,9 +17,9 @@ export const site = {
   url: 'https://www.example.com',               // PLACEHOLDER
 
   // --- Contact -----------------------------------------------------------
-  phone: '+94 70 000 0000',                     // PLACEHOLDER [NUMBER] (display)
-  phoneHref: '+94700000000',                    // PLACEHOLDER (tel: link, no spaces)
-  whatsapp: '94700000000',                      // PLACEHOLDER (wa.me format, no +)
+  phone: '+94 74 144 1113',                     // call + WhatsApp (display)
+  phoneHref: '+94741441113',                    // tel: link, no spaces
+  whatsapp: '94741441113',                      // wa.me format, no + (0741441113)
   whatsappMessage: 'Hi! I would like a free study abroad consultation.',
   email: 'hello@example.com',                   // PLACEHOLDER [EMAIL]
   hours: [
@@ -37,18 +37,16 @@ export const site = {
       region: 'Western Province',
       postcode: '11880',
       country: 'LK',
-      phone: '+94 70 000 0000',                 // PLACEHOLDER
+      phone: '+94 74 144 1113',
       mapQuery: 'Nittambuwa, Sri Lanka',        // PLACEHOLDER — use your exact address for the map
       geo: { lat: 7.1440, lng: 80.0960 },       // approx. Nittambuwa town centre — update to exact location
     },
   ],
 
   social: {
-    facebook: 'https://www.facebook.com/',      // PLACEHOLDER
-    instagram: 'https://www.instagram.com/',    // PLACEHOLDER
-    linkedin: 'https://www.linkedin.com/',      // PLACEHOLDER
-    youtube: 'https://www.youtube.com/',        // PLACEHOLDER
-    tiktok: 'https://www.tiktok.com/',          // PLACEHOLDER
+    facebook: 'https://www.facebook.com/share/1Q6XBhM2Zj/?mibextid=wwXIfr',
+    instagram: 'https://www.instagram.com/prestigemigration',
+    tiktok: 'https://www.tiktok.com/@prestigemigration',
   },
 
   // --- Trust strip (PLACEHOLDER — use only figures you can substantiate) --

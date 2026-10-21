@@ -59,14 +59,16 @@ The loader shows for at least 0.7 s and hides as soon as the page is ready. CSS 
 
 The other animations are the hero entrance, scroll reveals, the timeline drawing in, counters, hover effects, a scroll progress bar and the WhatsApp pulse. All of them are turned off for visitors who choose “reduce motion” in their device settings.
 
-## Forms
+## Contact & forms
 
-Set `site.forms` in `build/config.mjs`:
+There is no enquiry form. Every page has a contact card instead, with a one-tap **WhatsApp** button (`site.whatsapp`, currently 074 144 1113) that opens a pre-filled message, plus a call button, the address and opening hours. On destination pages the message names the country, and on the Events page each "Reserve a seat" link names the event.
+
+The only form left is the footer **newsletter signup**. To make it send, set `site.forms` in `build/config.mjs`:
 
 - **Formspree** (any host): create a form at formspree.io, paste its ID into `formspreeId`, then rebuild.
-- **Netlify Forms** (Netlify only): set `provider: 'netlify'`, then rebuild. Submissions appear under *Site → Forms*.
+- **Netlify Forms** (Netlify only): set `provider: 'netlify'`, then rebuild.
 
-Until an ID is set, forms run in **demo mode**: they validate and show a success message without sending anything.
+Until then it runs in **demo mode**: it shows a success message but sends nothing.
 
 ## Preview locally
 

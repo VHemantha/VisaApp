@@ -15,7 +15,7 @@
 ├── pages/blog/                     Listing (featured + filter)
 │   └── <slug>/                     Article template (6 sample posts)
 ├── pages/events/                   Fairs, webinars, workshops
-├── pages/contact/                  Form, phone, WhatsApp, email, hours, map, branches
+├── pages/contact/                  WhatsApp, phone, email, hours, map
 ├── pages/privacy/                  Privacy policy (placeholder)
 ├── pages/thank-you/                Form success page (noindex)
 ├── 404.html

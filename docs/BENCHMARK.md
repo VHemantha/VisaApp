@@ -35,7 +35,7 @@ Reviewed October 2026: **skygate.lk**, **fineducationconsultants.lk**, **wiseedu
 | Broken “0” counters and unsupported claims | Stat values are rendered in HTML first (correct even without JS), then animated. All figures are flagged in `config.mjs` for verification |
 | Cluttered heroes, loaders and sliders | One static hero with one primary and one secondary CTA. No loader, no carousel above the fold |
 | Too many CTA labels | One primary action everywhere (“Book a Free Consultation”) and one secondary (WhatsApp) |
-| WhatsApp-only or broken forms | One consistent, validated enquiry form on every page, plus WhatsApp |
+| WhatsApp-only or broken forms | A clear contact card on every page: one-tap WhatsApp (with a pre-filled message), call, address and hours |
 | Image-only course info, no country detail | Text-based country pages: why study there, courses, costs, intakes, visa, work rights, FAQ |
 | Stale dates, typos, `#` links | Content lives in one data file. The build checks links (0 broken), sets the footer year automatically, and keeps dates in ISO format |
 | Weak mobile UX | Mobile-first layout, tested at 360 / 768 / 1024 / 1440 px, 48 px tap targets, slide-in drawer |
