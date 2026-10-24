@@ -26,7 +26,7 @@ const pages = [
   P.home(), P.about(), P.destinationsIndex(), ...destinations.map(P.destinationPage),
   P.servicesPage(), P.migrationPage(), P.scholarshipsPage(), P.storiesPage(),
   P.blogIndex(), ...posts.map(P.articlePage), P.eventsPage(), P.contactPage(),
-  P.privacyPage(), P.thankYouPage(),
+  P.privacyPage(),
 ];
 
 const write = (rel, content) => {
@@ -38,13 +38,13 @@ const write = (rel, content) => {
 for (const { path, html } of pages) write(join(path, 'index.html'), html);
 write('404.html', P.notFoundPage().html);
 
-// sitemap.xml (excludes thank-you)
+// sitemap.xml
 const today = new Date().toISOString().slice(0, 10);
-const urls = pages.filter((p) => !p.path.includes('thank-you')).map((p) => {
+const urls = pages.map((p) => {
   const priority = p.path === '' ? '1.0' : p.path.split('/').length > 3 ? '0.6' : '0.8';
   return `  <url><loc>${site.url}/${p.path}</loc><lastmod>${today}</lastmod><priority>${priority}</priority></url>`;
 });
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`);
-write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /pages/thank-you/\n\nSitemap: ${site.url}/sitemap.xml\n`);
+write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${site.url}/sitemap.xml\n`);
 
 console.log(`Built ${pages.length + 1} pages + sitemap.xml + robots.txt`);

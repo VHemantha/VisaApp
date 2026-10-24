@@ -1,6 +1,6 @@
 # Prestige Migrations: study abroad website
 
-A fast, accessible static website for a Sri Lankan education and migration consultancy. It uses semantic HTML, modern CSS and about 4 KB (gzipped) of vanilla JS, with no frameworks and no backend.
+A fast, accessible static website for a Sri Lankan education and migration consultancy. It uses semantic HTML, modern CSS, a small vanilla JS file and [Motion](https://motion.dev) (the vanilla build of Framer Motion) for animation. No frameworks, no backend and no forms.
 
 - `docs/BENCHMARK.md`: competitor review and takeaways
 - `docs/DESIGN-SYSTEM.md`: sitemap, colours, type scale, spacing, components
@@ -12,8 +12,9 @@ index.html, 404.html, sitemap.xml, robots.txt   ← generated
 pages/…/index.html                               ← generated (clean URLs: /pages/about/)
 assets/css/styles.css                            ← all styles (design tokens at the top)
 assets/js/main.js                                ← all interactivity
+assets/js/vendor/motion.min.js                   ← Motion 12 (MIT), animation engine
 assets/images/                                   ← logo, favicon, OG image
-build/config.mjs                                 ← brand name, phone, email, offices, stats, form settings
+build/config.mjs                                 ← brand name, phone, email, offices, stats
 build/content.mjs                                ← all page copy: destinations, services, FAQs, blog posts…
 build/lib.mjs, pages.mjs, build.mjs              ← templates and generator
 ```
@@ -29,7 +30,7 @@ The HTML pages are **generated**. To change anything:
 
 To add a blog post, append an object to `posts` in `content.mjs` and rebuild. The listing, article page, related posts and sitemap all update automatically. Destinations and events work the same way.
 
-Destinations currently offered: **Finland, Sweden, Germany, Malaysia and Ireland**. If you **remove** a destination or post, also delete its old folder under `pages/` (the build writes new files but doesn't delete old ones), and update `formDestinations` in `config.mjs`.
+Destinations currently offered: **Finland, Sweden, Germany, Malaysia and Ireland**. If you **remove** a destination or post, also delete its old folder under `pages/` (the build writes new files but doesn't delete old ones).
 
 ## Before going live: replace every placeholder
 
@@ -57,18 +58,11 @@ A branded loading screen ("Preparing your journey…") shows while the page star
 
 The loader shows for at least 0.7 s and hides as soon as the page is ready. CSS also hides it after 4 s if JavaScript fails.
 
-The other animations are the hero entrance, scroll reveals, the timeline drawing in, counters, hover effects, a scroll progress bar and the WhatsApp pulse. All of them are turned off for visitors who choose “reduce motion” in their device settings.
+The other animations (hero word reveal, scroll reveals, number tickers, the timeline beam, the rotating destination chip, the sliding nav highlight, spotlight cards and marquees) run on Motion. See `docs/DESIGN-SYSTEM.md`. All of them are turned off for visitors who choose “reduce motion” in their device settings, and the page is shown statically if Motion fails to load.
 
-## Contact & forms
+## Contact
 
-There is no enquiry form. Every page has a contact card instead, with a one-tap **WhatsApp** button (`site.whatsapp`, currently 074 144 1113) that opens a pre-filled message, plus a call button, the address and opening hours. On destination pages the message names the country, and on the Events page each "Reserve a seat" link names the event.
-
-The only form left is the footer **newsletter signup**. To make it send, set `site.forms` in `build/config.mjs`:
-
-- **Formspree** (any host): create a form at formspree.io, paste its ID into `formspreeId`, then rebuild.
-- **Netlify Forms** (Netlify only): set `provider: 'netlify'`, then rebuild.
-
-Until then it runs in **demo mode**: it shows a success message but sends nothing.
+There are no forms on the site. Every page has a contact card instead, with a one-tap **WhatsApp** button (`site.whatsapp`, currently 074 144 1113) that opens a pre-filled message, plus a call button, the address and opening hours. On destination pages the message names the country, and on the Events page each "Reserve a seat" link names the event.
 
 ## Preview locally
 
@@ -81,7 +75,7 @@ python -m http.server 8000      # or: npx serve .
 
 ## Deploy
 
-**Netlify** (recommended, because it also handles forms)
+**Netlify** (recommended)
 1. Push the folder to a GitHub repo.
 2. In Netlify, choose *Add new site → Import from Git* and pick the repo. `netlify.toml` already sets the build command (`node build/build.mjs`) and the publish directory (`.`).
 3. Add your custom domain under *Domain settings*. HTTPS is automatic.
@@ -100,5 +94,5 @@ After deploying, submit `https://yourdomain/sitemap.xml` in Google Search Consol
 
 ## What's built in
 - **Performance:** responsive WebP images via `srcset`, lazy loading, explicit width/height (no layout shift), preconnects, one CSS and one deferred JS file, content-hashed cache busting.
-- **Accessibility:** skip link, landmarks, one h1 per page, visible focus states, keyboard-accessible dropdowns, focus-trapped mobile menu, ARIA live form errors, AA contrast, `prefers-reduced-motion` support.
+- **Accessibility:** skip link, landmarks, one h1 per page, visible focus states, keyboard-accessible dropdowns, focus-trapped mobile menu, AA contrast, `prefers-reduced-motion` support.
 - **SEO:** a unique title and description on every page, canonical links, Open Graph and Twitter tags, and JSON-LD for EducationalOrganization + LocalBusiness, FAQPage, BreadcrumbList, BlogPosting, Event and Service. Also `sitemap.xml` and `robots.txt`.

@@ -62,18 +62,4 @@ export const site = {
   // 'always'  = show on every page load    'off' = never show
   loader: 'session',
   loaderText: 'Preparing your journey',
-
-  // --- Forms -------------------------------------------------------------
-  // provider: 'formspree' -> set formspreeId (https://formspree.io)
-  //           'netlify'   -> uses Netlify Forms (no id needed)
-  // While formspreeId is the placeholder, forms run in demo mode.
-  forms: {
-    provider: 'formspree',
-    formspreeId: 'YOUR_FORM_ID',                // PLACEHOLDER
-  },
-
-  // Destinations shown in form dropdowns
-  formDestinations: ['Finland', 'Sweden', 'Germany', 'Malaysia', 'Ireland', 'Not sure yet'],
-  studyLevels: ['Foundation / Diploma', "Bachelor's degree", "Master's degree", 'PhD / Research', 'English language course'],
-  intakes: ['January / February 2027', 'April 2027', 'May 2027', 'August / September 2027', 'October 2027', 'Later / not sure'],
 };

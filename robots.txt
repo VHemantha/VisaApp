@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /pages/thank-you/
 
 Sitemap: https://www.example.com/sitemap.xml

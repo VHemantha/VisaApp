@@ -1,10 +1,14 @@
 /* =========================================================================
-   Prestige Migrations — site scripts (vanilla JS, no dependencies)
-   0. Loading screen
-   1. Header shadow + scroll progress   2. Mobile drawer   3. Desktop dropdowns
-   4. Scroll reveal   5. Stat counters   6. Testimonial slider
-   7. FAQ animation   8. Filters         9. Table of contents
-   10. Forms (validation + Formspree / Netlify submission)
+   Prestige Migration — site scripts
+   Animations use Motion (motion.dev, the vanilla JS build of Framer Motion),
+   loaded just before this file from assets/js/vendor/motion.min.js.
+   Without Motion, or with "reduce motion" on, everything is shown statically.
+   0. Loading screen + hero entrance    1. Header + scroll progress
+   2. Mobile drawer                      3. Desktop dropdowns + nav highlight
+   4. Scroll reveal                      5. Number tickers
+   6. Timeline beam + hero parallax      7. Destination rotator
+   8. Spotlight cards                    9. FAQ animation
+   10. Filters                           11. Table of contents
    ========================================================================= */
 (() => {
   'use strict';
@@ -12,18 +16,22 @@
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const root = document.documentElement;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const M = window.Motion;
+  const motionOn = !!M && !reduceMotion;
+  const ease = [0.22, 1, 0.36, 1];
+  root.classList.add(motionOn ? 'motion-ready' : 'no-motion');
 
   /* 0. Loading screen ---------------------------------------------------
      Shown for at least MIN ms (so it doesn't flash), then hidden as soon as
      the page is ready. CSS also hides it after 4s if JS fails.
-     Scroll animations start afterwards. */
+     Entrance and scroll animations start afterwards. */
   const onLoadedCallbacks = [];
-  const whenLoaded = (fn) => (root.classList.contains('is-loaded') && !loaderPending ? fn() : onLoadedCallbacks.push(fn));
   const loaderEl = $('[data-loader]');
   let loaderPending = !!loaderEl && !root.classList.contains('no-loader');
+  const whenLoaded = (fn) => (root.dataset.loaded && !loaderPending ? fn() : onLoadedCallbacks.push(fn));
 
   function finishLoading() {
-    if (!loaderPending && root.dataset.loaded) return;
+    if (root.dataset.loaded) return;
     loaderPending = false; root.dataset.loaded = '1';
     root.classList.add('is-loaded');
     if (loaderEl) { loaderEl.classList.add('is-done'); setTimeout(() => loaderEl.remove(), 700); }
@@ -36,6 +44,54 @@
     setTimeout(finishLoading, Math.max(0, MIN - performance.now()));
   } else {
     finishLoading();
+  }
+
+  /* Split the hero headline into words for a staggered blur-in (21st.dev "text effect") */
+  function splitWords(el) {
+    const wrap = (node) => {
+      [...node.childNodes].forEach((n) => {
+        if (n.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach((part) => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { frag.append(part); return; }
+            const s = document.createElement('span'); s.className = 'word'; s.textContent = part; frag.append(s);
+          });
+          n.replaceWith(frag);
+        } else if (n.nodeType === 1) wrap(n);
+      });
+    };
+    wrap(el);
+    return $$('.word', el);
+  }
+
+  if (motionOn) {
+    const { animate, stagger } = M;
+    whenLoaded(() => {
+      // Home hero
+      const copy = $('.hero__copy');
+      if (copy) {
+        const h1 = $('[data-split]', copy);
+        const words = h1 ? splitWords(h1) : [];
+        const others = [...copy.children].filter((el) => el !== h1);
+        if (h1) h1.style.opacity = 1;
+        animate(words, { opacity: [0, 1], y: [18, 0], filter: ['blur(8px)', 'blur(0px)'] }, { duration: 0.7, delay: stagger(0.06, { startDelay: 0.1 }), ease });
+        animate(others, { opacity: [0, 1], y: [20, 0] }, { duration: 0.7, delay: stagger(0.1, { startDelay: 0.35 }), ease });
+        const media = $('.hero__media');
+        if (media) animate(media, { opacity: [0, 1], scale: [0.96, 1], y: [30, 0] }, { duration: 1.1, delay: 0.2, ease });
+        $$('.float-card').forEach((card, i) => {
+          animate(card, { opacity: [0, 1], scale: [0.8, 1] }, { type: 'spring', bounce: 0.35, duration: 0.8, delay: 0.8 + i * 0.2 })
+            .then(() => animate(card, { y: [0, -8, 0] }, { duration: 5 + i * 0.6, repeat: Infinity, ease: 'easeInOut' }));
+        });
+      }
+      // Interior heroes
+      $$('.page-hero .container, .dest-hero__inner').forEach((c) => {
+        animate([...c.children], { opacity: [0, 1], y: [24, 0] }, { duration: 0.7, delay: stagger(0.08), ease });
+      });
+      // Above-the-fold blocks (contact page)
+      const rise = $$('.rise-in');
+      if (rise.length) animate(rise, { opacity: [0, 1], y: [24, 0] }, { duration: 0.7, delay: stagger(0.08, { startDelay: 0.15 }), ease });
+    });
   }
 
   /* 1. Header shadow + scroll progress bar ----------------------------- */
@@ -69,6 +125,7 @@
     document.body.classList.toggle('no-scroll', open);
     if (open) {
       lastFocus = document.activeElement;
+      if (motionOn) M.animate($$('.drawer__list > li, .drawer__cta > *', drawer), { opacity: [0, 1], x: [24, 0] }, { duration: 0.5, delay: M.stagger(0.04, { startDelay: 0.12 }), ease });
       setTimeout(() => focusables()[0]?.focus(), 50);
     } else {
       lastFocus?.focus();
@@ -106,59 +163,99 @@
   });
   document.addEventListener('click', (e) => { if (!e.target.closest('.nav__has-menu')) closeMenus(); });
 
+  /* Sliding highlight behind the hovered / current nav link (21st.dev "tubelight navbar") */
+  const navList = $('[data-nav]');
+  const pill = $('[data-nav-pill]');
+  if (navList && pill && motionOn) {
+    const active = $('.nav__link.is-active', navList);
+    const moveTo = (link, instant) => {
+      if (!link) { M.animate(pill, { opacity: 0 }, { duration: 0.2 }); return; }
+      const r = link.getBoundingClientRect(); const base = navList.getBoundingClientRect();
+      const target = { x: r.left - base.left, width: r.width, opacity: 1 };
+      pill.style.setProperty('--glow', link === active ? 1 : 0);
+      M.animate(pill, target, instant ? { duration: 0 } : { type: 'spring', bounce: 0.2, duration: 0.45 });
+    };
+    $$('.nav__link', navList).forEach((link) => {
+      link.addEventListener('pointerenter', () => moveTo(link));
+      link.addEventListener('focus', () => moveTo(link));
+    });
+    navList.addEventListener('pointerleave', () => moveTo(active));
+    // Place on the current page once fonts have settled widths
+    const place = () => moveTo(active, true);
+    (document.fonts?.ready || Promise.resolve()).then(place);
+    window.addEventListener('resize', place);
+  }
+
   /* 4. Reveal on scroll ------------------------------------------------- */
   const reveals = $$('.reveal');
-  if ('IntersectionObserver' in window && !reduceMotion) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); } });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-    whenLoaded(() => reveals.forEach((el) => io.observe(el)));
-  } else {
-    reveals.forEach((el) => el.classList.add('is-visible'));
+  if (motionOn) {
+    whenLoaded(() => reveals.forEach((el) => {
+      // Stagger siblings that enter together (cards in a grid, steps…)
+      const sibs = [...el.parentElement.children].filter((x) => x.classList.contains('reveal'));
+      const i = Math.min(sibs.indexOf(el), 5);
+      const stop = M.inView(el, () => {
+        M.animate(el, { opacity: [0, 1], y: [28, 0] }, { duration: 0.8, delay: i * 0.07, ease });
+        stop();
+      }, { margin: '0px 0px -8% 0px', amount: 0.08 });
+    }));
   }
 
-  /* 5. Animated stat counters (final values are already in the HTML) ---- */
-  const counters = $$('[data-count]');
-  if ('IntersectionObserver' in window && !reduceMotion && counters.length) {
+  /* 5. Number tickers (final values are already in the HTML) ------------ */
+  if (motionOn) {
     const fmt = new Intl.NumberFormat('en-GB');
-    const run = (el) => {
-      const end = +el.dataset.count; const suffix = el.dataset.suffix || ''; const dur = 1400; const t0 = performance.now();
-      const tick = (t) => {
-        const p = Math.min((t - t0) / dur, 1); const eased = 1 - Math.pow(1 - p, 3);
-        el.textContent = fmt.format(Math.round(end * eased)) + suffix;
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    };
-    const co = new IntersectionObserver((entries) => {
-      entries.forEach((en) => { if (en.isIntersecting) { run(en.target); co.unobserve(en.target); } });
-    }, { threshold: 0.6 });
-    whenLoaded(() => counters.forEach((el) => co.observe(el)));
+    whenLoaded(() => $$('[data-count]').forEach((el) => {
+      const end = +el.dataset.count; const suffix = el.dataset.suffix || '';
+      el.textContent = '0' + suffix;
+      const stop = M.inView(el, () => {
+        M.animate(0, end, { duration: 1.8, ease, onUpdate: (v) => { el.textContent = fmt.format(Math.round(v)) + suffix; } });
+        stop();
+      }, { amount: 0.6 });
+    }));
   }
 
-  /* 6. Testimonial slider (CSS scroll-snap + buttons) -------------------- */
-  $$('[data-slider]').forEach((slider) => {
-    const track = $('.slider__track', slider);
-    const prev = $('[data-slider-prev]', slider);
-    const next = $('[data-slider-next]', slider);
-    const step = () => track.firstElementChild.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 0);
-    const update = () => {
-      prev.disabled = track.scrollLeft <= 4;
-      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
-    };
-    prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: reduceMotion ? 'auto' : 'smooth' }));
-    next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: reduceMotion ? 'auto' : 'smooth' }));
-    track.addEventListener('scroll', update, { passive: true });
-    track.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') { e.preventDefault(); next.click(); }
-      if (e.key === 'ArrowLeft') { e.preventDefault(); prev.click(); }
+  /* 6. Timeline beam fills as you scroll + subtle hero parallax ---------- */
+  if (motionOn) {
+    $$('[data-steps]').forEach((wrap) => {
+      const beam = $('[data-beam]', wrap);
+      const steps = $$('.step', wrap);
+      M.scroll((p) => {
+        beam.style.setProperty('--p', p.toFixed(3));
+        steps.forEach((s, i) => s.classList.toggle('is-active', p >= i / Math.max(steps.length - 1, 1) - 0.02));
+      }, { target: wrap, offset: ['start 80%', 'end 55%'] });
     });
-    window.addEventListener('resize', update);
-    update();
+    const heroImg = $('.hero__img img');
+    const hero = $('.hero');
+    if (heroImg && hero) M.scroll(M.animate(heroImg, { y: [0, -60] }, { ease: 'linear' }), { target: hero, offset: ['start start', 'end start'] });
+  } else {
+    $$('.step').forEach((s) => s.classList.add('is-active'));
+  }
+
+  /* 7. Rotating destination chip on the hero photo (21st.dev "text rotate") */
+  $$('[data-rotator]').forEach((rot) => {
+    const items = $$('.rotator__item', rot);
+    if (!motionOn || items.length < 2) return;
+    let i = 0;
+    setInterval(() => {
+      const cur = items[i]; i = (i + 1) % items.length; const next = items[i];
+      M.animate(cur, { y: [0, -18], opacity: [1, 0] }, { duration: 0.4, ease });
+      M.animate(next, { y: [18, 0], opacity: [0, 1] }, { type: 'spring', bounce: 0.3, duration: 0.6, delay: 0.1 });
+      cur.classList.remove('is-active'); next.classList.add('is-active');
+    }, 2600);
   });
 
-  /* 7. Smooth FAQ accordion (progressive enhancement of <details>) ------ */
-  if (!reduceMotion) {
+  /* 8. Spotlight: card glow follows the cursor (21st.dev "spotlight card") */
+  if (window.matchMedia('(hover: hover)').matches) {
+    document.addEventListener('pointermove', (e) => {
+      const card = e.target.closest?.('.card');
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      card.style.setProperty('--my', `${e.clientY - r.top}px`);
+    }, { passive: true });
+  }
+
+  /* 9. Smooth FAQ accordion (progressive enhancement of <details>) ------ */
+  if (motionOn) {
     $$('.faq__item').forEach((d) => {
       const summary = $('summary', d); const body = $('.faq__body', d);
       summary.addEventListener('click', (e) => {
@@ -166,33 +263,34 @@
         if (d.dataset.animating) return;
         d.dataset.animating = '1';
         if (d.open) {
-          const h = body.offsetHeight;
-          body.animate([{ height: h + 'px', opacity: 1 }, { height: '0px', opacity: 0 }], { duration: 260, easing: 'ease' })
-            .onfinish = () => { d.open = false; delete d.dataset.animating; };
+          M.animate(body, { height: [`${body.offsetHeight}px`, '0px'], opacity: [1, 0] }, { duration: 0.3, ease })
+            .then(() => { d.open = false; body.style.height = ''; body.style.opacity = ''; delete d.dataset.animating; });
         } else {
           d.open = true;
-          const h = body.offsetHeight;
-          body.animate([{ height: '0px', opacity: 0 }, { height: h + 'px', opacity: 1 }], { duration: 300, easing: 'ease' })
-            .onfinish = () => { delete d.dataset.animating; };
+          M.animate(body, { height: ['0px', `${body.offsetHeight}px`], opacity: [0, 1] }, { duration: 0.4, ease })
+            .then(() => { body.style.height = ''; delete d.dataset.animating; });
         }
       });
     });
   }
 
-  /* 8. Category filters (blog, success stories) ------------------------- */
+  /* 10. Category filters (blog, success stories) ------------------------ */
   $$('[data-filter-group]').forEach((group) => {
     const list = $(`[data-filter-list="${group.dataset.filterGroup}"]`);
     group.addEventListener('click', (e) => {
       const b = e.target.closest('[data-filter]'); if (!b) return;
       $$('[data-filter]', group).forEach((x) => { x.classList.toggle('is-active', x === b); x.setAttribute('aria-pressed', String(x === b)); });
+      const shown = [];
       $$('[data-cat]', list).forEach((item) => {
         item.hidden = !(b.dataset.filter === 'all' || item.dataset.cat === b.dataset.filter);
-        item.classList.add('is-visible');
+        if (!item.hidden) shown.push(item);
       });
+      if (motionOn) M.animate(shown, { opacity: [0, 1], scale: [0.96, 1], y: [12, 0] }, { duration: 0.45, delay: M.stagger(0.05), ease });
+      else shown.forEach((item) => { item.style.opacity = 1; });
     });
   });
 
-  /* 9. Destination page table-of-contents highlighting ------------------ */
+  /* 11. Destination page table-of-contents highlighting ----------------- */
   const tocLinks = $$('.toc a');
   if (tocLinks.length && 'IntersectionObserver' in window) {
     const map = new Map(tocLinks.map((a) => [a.getAttribute('href').slice(1), a]));
@@ -203,73 +301,6 @@
     }, { rootMargin: '-30% 0px -60% 0px' });
     map.forEach((_, id) => { const s = document.getElementById(id); if (s) so.observe(s); });
   }
-
-  /* 10. Forms ----------------------------------------------------------- */
-  const messages = {
-    valueMissing: 'This field is required.',
-    typeMismatch: 'Please enter a valid email address.',
-    patternMismatch: 'Please enter a valid phone number.',
-    tooShort: 'Please enter at least 2 characters.',
-  };
-  const errorFor = (input) => {
-    const v = input.validity;
-    if (v.valid) return '';
-    for (const k of Object.keys(messages)) if (v[k]) return messages[k];
-    return 'Please check this field.';
-  };
-  const showError = (input) => {
-    const msg = errorFor(input);
-    const el = document.getElementById(`${input.id}-err`);
-    input.classList.toggle('is-invalid', !!msg);
-    input.setAttribute('aria-invalid', String(!!msg));
-    if (el) { el.textContent = msg; input.setAttribute('aria-describedby', el.id); }
-    return !msg;
-  };
-
-  $$('form[data-provider]').forEach((form) => {
-    const fields = $$('input[required], select[required], textarea[required]', form);
-    fields.forEach((f) => {
-      f.addEventListener('blur', () => { if (f.value) showError(f); });
-      f.addEventListener('input', () => { if (f.classList.contains('is-invalid')) showError(f); });
-    });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const status = $('.form__status', form);
-      status.className = 'form__status'; status.textContent = '';
-      const valid = fields.map(showError).every(Boolean);
-      if (!valid) { fields.find((f) => f.classList.contains('is-invalid'))?.focus(); return; }
-
-      const btn = $('[type="submit"]', form); const label = btn.innerHTML;
-      btn.disabled = true; btn.textContent = 'Sending…';
-      const data = new FormData(form);
-      const provider = form.dataset.provider;
-
-      try {
-        if (provider === 'formspree' && form.action.includes('YOUR_FORM_ID')) {
-          // Demo mode — no endpoint configured yet (see build/config.mjs)
-          await new Promise((r) => setTimeout(r, 600));
-          console.info('[demo] Form data:', Object.fromEntries(data));
-        } else if (provider === 'netlify') {
-          const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(data).toString() });
-          if (!res.ok) throw new Error(res.status);
-        } else {
-          const res = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
-          if (!res.ok) throw new Error(res.status);
-        }
-        form.reset();
-        status.classList.add('is-success');
-        status.textContent = form.dataset.formName === 'newsletter'
-          ? 'Thanks! You’re subscribed to intake alerts.'
-          : 'Thank you! A counsellor will contact you within one working day.';
-      } catch (err) {
-        status.classList.add('is-error');
-        status.textContent = 'Sorry, something went wrong. Please try again or contact us on WhatsApp.';
-      } finally {
-        btn.disabled = false; btn.innerHTML = label;
-      }
-    });
-  });
 
   // Keep copyright year current
   $$('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
