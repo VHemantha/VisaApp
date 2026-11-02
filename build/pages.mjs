@@ -18,9 +18,11 @@ const inName = (d) => (d.the ? 'the ' : '') + d.name; // "in the United Kingdom"
 
 /* ---------- Reusable sections ---------- */
 function destinationCards(c, list = destinations, { helpCard = false } = {}) {
-  return `<div class="grid grid--3">
+  const feature = helpCard && list.length === 5; // first card spans two columns, help card spans the row
+  return `<div class="grid grid--3${feature ? ' dest-grid--feature' : ''}">
 ${list.map((d) => `        <a class="dest-card reveal" href="${c.href(`pages/destinations/${d.slug}/`)}">
-          <div class="dest-card__media">${img(c, d.img, { ratio: [4, 3], widths: [400, 600, 800], sizes: '(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw' })}</div>
+          <div class="dest-card__media">${img(c, d.img, { ratio: [4, 3], widths: [400, 600, 800, 1200], sizes: '(min-width: 1024px) 760px, (min-width: 640px) 50vw, 100vw' })}</div>
+          <span class="dest-card__go" aria-hidden="true">${icon('arrow')}</span>
           <div class="dest-card__body">
             <div class="dest-card__title">${flag(d.flag, d.name)}<h3>Study in ${esc(inName(d))}</h3></div>
             <p>${esc(d.benefit)}</p>
@@ -28,22 +30,27 @@ ${list.map((d) => `        <a class="dest-card reveal" href="${c.href(`pages/des
           </div>
         </a>`).join('\n')}
 ${helpCard ? `        <a class="dest-card dest-card--help reveal" href="#consultation">
-          <span class="icon-tile">${icon('compass')}</span>
-          <h3>Not sure which country is right for you?</h3>
-          <p>Tell us your goals and budget — we’ll compare all five destinations for you, honestly and for free.</p>
-          <span class="btn btn--primary btn--sm">Get a free recommendation ${icon('arrow')}</span>
+          <div>
+            <span class="icon-tile">${icon('compass')}</span>
+            <h3>Not sure which country is <em>right for you?</em></h3>
+            <p>Tell us your goals and budget. We’ll compare all five destinations for you, honestly and for free.</p>
+          </div>
+          <span class="btn btn--white">Get a free recommendation ${icon('arrow')}</span>
         </a>` : ''}
       </div>`;
 }
 
 function stepsTimeline() {
-  return `<ol class="steps">
-${steps.map(([t, d], i) => `        <li class="step reveal">
-          <span class="step__num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
-          <h3>${esc(t)}</h3>
-          <p>${esc(d)}</p>
-        </li>`).join('\n')}
-      </ol>`;
+  return `<div class="steps-wrap" data-steps>
+        <div class="steps__track" aria-hidden="true"><span data-beam></span></div>
+        <ol class="steps">
+${steps.map(([t, d], i) => `          <li class="step reveal">
+            <span class="step__num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+            <h3>${esc(t)}</h3>
+            <p>${esc(d)}</p>
+          </li>`).join('\n')}
+        </ol>
+      </div>`;
 }
 
 function testimonialCard(t, c) {
@@ -59,15 +66,23 @@ function testimonialCard(t, c) {
           </figure>`;
 }
 
-function testimonialSlider(c) {
-  return `<div class="slider reveal" data-slider>
-        <div class="slider__track" tabindex="0" role="region" aria-label="Student testimonials (scrollable)">
-          ${testimonials.map((t) => `<div class="slider__slide">${testimonialCard(t, c)}</div>`).join('\n          ')}
-        </div>
-        <div class="slider__controls">
-          <button class="icon-btn" type="button" data-slider-prev aria-label="Previous testimonial">${icon('chevronL')}</button>
-          <button class="icon-btn" type="button" data-slider-next aria-label="Next testimonial">${icon('chevronR')}</button>
-        </div>
+function testimonialMarquee(c) {
+  // Two rows scrolling in opposite directions; the duplicate tracks are aria-hidden.
+  const row = (list, reverse) => {
+    const cards = list.map((t) => testimonialCard(t, c)).join('\n            ');
+    return `<div class="t-marquee__row${reverse ? ' t-marquee__row--reverse' : ''}"${reverse ? ' aria-hidden="true"' : ''}>
+          <div class="t-marquee__track">
+            ${cards}
+          </div>
+          <div class="t-marquee__track" aria-hidden="true">
+            ${cards}
+          </div>
+        </div>`;
+  };
+  const shifted = [...testimonials.slice(3), ...testimonials.slice(0, 3)];
+  return `<div class="t-marquee reveal" role="region" aria-label="Student testimonials">
+        ${row(testimonials, false)}
+        ${row(shifted, true)}
       </div>`;
 }
 
@@ -104,7 +119,7 @@ function eventCard(c, e) {
         </article>`;
 }
 
-function ctaBand(c, { title = 'Ready to start your journey?', lead = 'Book a free, no-obligation consultation with an experienced counsellor. We’ll map out your options, costs and timeline — in person, by phone or on Zoom.', preselect } = {}) {
+function ctaBand(c, { title = 'Ready to start your <em>journey?</em>', lead = 'Book a free, no-obligation consultation with an experienced counsellor. We’ll map out your options, costs and timeline — in person, by phone or on Zoom.', preselect } = {}) {
   return `
   <section class="section cta-band" id="consultation" aria-labelledby="cta-title">
     <div class="container cta-band__inner">
@@ -137,26 +152,32 @@ export function home() {
   const c = ctx(0);
   const body = `
   <section class="hero">
+    <div class="hero__bg" aria-hidden="true">
+      <div class="bg-grid"></div>
+      <span class="glow glow--a"></span>
+      <span class="glow glow--b"></span>
+    </div>
     <div class="container hero__inner">
       <div class="hero__copy">
-        <p class="badge">${icon('sparkle')} Applications open for 2027 intakes</p>
-        <h1>Your future abroad, <span class="text-gradient">thoughtfully planned.</span></h1>
-        <p class="hero__lead">Honest, expert guidance for Sri Lankan students — from choosing the right course to landing in Finland, Sweden, Germany, Malaysia or Ireland.</p>
+        <a class="pill-badge" href="#consultation"><span class="pill-badge__tag">2027</span>Applications open for 2027 intakes${icon('arrow')}</a>
+        <h1 data-split>Your future abroad, <em>thoughtfully planned.</em></h1>
+        <p class="hero__lead">Honest, expert guidance for Sri Lankan students, from choosing the right course to landing in Finland, Sweden, Germany, Malaysia or Ireland.</p>
         <div class="btn-row">
           ${btn('#consultation', 'Book a Free Consultation', 'primary', { iconName: 'arrow' })}
           ${btn('#destinations', 'Explore Destinations', 'outline')}
         </div>
-        <ul class="hero__points">
-          <li>${icon('checkCircle')}No-obligation advice</li>
-          <li>${icon('checkCircle')}Transparent fees</li>
-          <li>${icon('checkCircle')}Visit us in Nittambuwa</li>
-        </ul>
+        <div class="hero__trust">
+          <span class="avatar-stack" aria-hidden="true">${testimonials.slice(0, 4).map((t) => `<span class="avatar">${initials(t.name)}</span>`).join('')}</span>
+          <p class="hero__trust-copy"><strong>${icon('star').repeat(5)}<span class="visually-hidden">Rated 5 out of 5</span></strong>${site.stats[1].value}+ students placed · ${site.stats[3].value}% visa success</p>
+        </div>
       </div>
-      <div class="hero__media">
-        <div class="hero__img">${img(c, 'heroGrads', { ratio: [5, 6], widths: [400, 600, 900], sizes: '(min-width: 1024px) 520px, 90vw', eager: true })}</div>
+      <div class="hero__media" data-parallax>
+        <span class="hero__orbit" aria-hidden="true"><span></span></span>
+        <div class="hero__img">${img(c, 'heroGrads', { ratio: [5, 6], widths: [400, 600, 900], sizes: '(min-width: 1024px) 540px, 90vw', eager: true })}</div>
+        <p class="hero__chip"><span>Study in</span><span class="rotator" data-rotator>${destinations.map((d, i) => `<span class="rotator__item${i === 0 ? ' is-active' : ''}">${flag(d.flag, d.name)}${esc(d.name)}</span>`).join('')}</span></p>
         <div class="float-card float-card--top">
           <span class="float-card__icon">${icon('calendar')}</span>
-          <span><strong>Next intake</strong><small>January 2027 — apply now</small></span>
+          <span><strong>Next intake</strong><small>January 2027, apply now</small></span>
         </div>
         <div class="float-card float-card--bottom">
           <span class="float-card__icon float-card__icon--teal">${icon('shield')}</span>
@@ -173,7 +194,7 @@ export function home() {
 
   <section class="section" id="destinations" aria-labelledby="dest-title">
     <div class="container">
-      ${sectionHead({ eyebrow: 'Study destinations', title: 'Where would you like to study?', lead: 'Five carefully chosen destinations, hundreds of universities and one team that knows each one inside out.', id: 'dest-title' })}
+      ${sectionHead({ eyebrow: 'Study destinations', title: 'Where would you like to <em>study?</em>', lead: 'Five carefully chosen destinations, hundreds of universities and one team that knows each one inside out.', id: 'dest-title' })}
       ${destinationCards(c, destinations, { helpCard: true })}
     </div>
   </section>
@@ -181,11 +202,12 @@ export function home() {
   <section class="section section--alt" aria-labelledby="services-title">
     <div class="container">
       <div class="split-head">
-        ${sectionHead({ eyebrow: 'What we do', title: 'End-to-end support, under one roof', lead: 'Everything you need to go from “thinking about it” to “boarding the plane”.', id: 'services-title' })}
+        ${sectionHead({ eyebrow: 'What we do', title: 'End-to-end support, <em>under one roof</em>', lead: 'Everything you need to go from “thinking about it” to “boarding the plane”.', id: 'services-title' })}
         ${btn(c.href('pages/services/'), 'All services', 'outline', { iconName: 'arrow' })}
       </div>
       <div class="grid grid--4">
-${services.map((s) => `        <article class="card service-card reveal">
+${services.map((s, i) => `        <article class="card service-card reveal">
+          <span class="service-card__num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
           <span class="icon-tile">${icon(s.icon)}</span>
           <h3>${esc(s.title)}</h3>
           <p>${esc(s.short)}</p>
@@ -194,13 +216,13 @@ ${services.map((s) => `        <article class="card service-card reveal">
     </div>
   </section>
 
-  <section class="section" aria-labelledby="why-title">
+  <section class="section section--dark" aria-labelledby="why-title">
     <div class="container split">
       <div class="split__media reveal">
         ${img(c, 'counselling', { ratio: [4, 3], widths: [480, 800, 1100], sizes: '(min-width: 1024px) 560px, 100vw' })}
       </div>
       <div class="split__copy">
-        ${sectionHead({ eyebrow: 'Why choose us', title: 'Advice that puts your future first', id: 'why-title' })}
+        ${sectionHead({ eyebrow: 'Why choose us', title: 'Advice that puts <em>your future</em> first', id: 'why-title' }).replace('class="eyebrow"', 'class="eyebrow eyebrow--light"')}
         <ul class="feature-list">
           <li class="reveal">${icon('target', 'icon icon--blue')}<div><h3>Honest recommendations</h3><p>We recommend what’s right for you — including cheaper options — not the university that pays the most commission.</p></div></li>
           <li class="reveal">${icon('award', 'icon icon--blue')}<div><h3>Certified counsellors</h3><p>Our team is trained and accredited by leading international education bodies.</p></div></li>
@@ -213,7 +235,7 @@ ${services.map((s) => `        <article class="card service-card reveal">
 
   <section class="section section--alt" aria-labelledby="how-title">
     <div class="container">
-      ${sectionHead({ eyebrow: 'How it works', title: 'Five clear steps to your offer and visa', lead: 'A simple, predictable process — you always know what happens next.', center: true, id: 'how-title' })}
+      ${sectionHead({ eyebrow: 'How it works', title: 'Five clear steps to your <em>offer and visa</em>', lead: 'A simple, predictable process — you always know what happens next.', center: true, id: 'how-title' })}
       ${stepsTimeline()}
     </div>
   </section>
@@ -228,17 +250,17 @@ ${services.map((s) => `        <article class="card service-card reveal">
   <section class="section" aria-labelledby="stories-title">
     <div class="container">
       <div class="split-head">
-        ${sectionHead({ eyebrow: 'Success stories', title: 'Students who made it happen', lead: 'Real journeys from Sri Lankan students now studying around the world.', id: 'stories-title' })}
+        ${sectionHead({ eyebrow: 'Success stories', title: 'Students who <em>made it happen</em>', lead: 'Real journeys from Sri Lankan students now studying around the world.', id: 'stories-title' })}
         ${btn(c.href('pages/success-stories/'), 'Read more stories', 'outline', { iconName: 'arrow' })}
       </div>
-      ${testimonialSlider(c)}
+      ${testimonialMarquee(c)}
     </div>
   </section>
 
   <section class="section section--alt" aria-labelledby="events-title">
     <div class="container">
       <div class="split-head">
-        ${sectionHead({ eyebrow: 'Events & intakes', title: 'Upcoming fairs and webinars', lead: 'Meet universities, get your profile assessed and ask anything — free.', id: 'events-title' })}
+        ${sectionHead({ eyebrow: 'Events & intakes', title: 'Upcoming fairs and <em>webinars</em>', lead: 'Meet universities, get your profile assessed and ask anything — free.', id: 'events-title' })}
         ${btn(c.href('pages/events/'), 'All events', 'outline', { iconName: 'arrow' })}
       </div>
       <div class="grid grid--3">
@@ -250,7 +272,7 @@ ${services.map((s) => `        <article class="card service-card reveal">
   <section class="section" aria-labelledby="faq-title">
     <div class="container faq-layout">
       <div>
-        ${sectionHead({ eyebrow: 'FAQ', title: 'Questions students ask us most', lead: 'Can’t find your answer? Our counsellors reply within one working day.', id: 'faq-title' })}
+        ${sectionHead({ eyebrow: 'FAQ', title: 'Questions students <em>ask us most</em>', lead: 'Can’t find your answer? Our counsellors reply within one working day.', id: 'faq-title' })}
         <div class="btn-row reveal">
           ${btn(waLink(), `${icon('whatsapp')} Ask on WhatsApp`, 'outline', { attrs: 'target="_blank" rel="noopener"' })}
         </div>
@@ -405,11 +427,11 @@ export function destinationPage(d) {
     <div class="container dest-hero__inner">
       ${breadcrumbs_(c, trail)}
       <p class="eyebrow eyebrow--light">${flag(d.flag, d.name)} Study destination</p>
-      <h1>Study in ${esc(inName(d))}</h1>
+      <h1>Study in <em>${esc(inName(d))}</em></h1>
       <p class="lead">${esc(d.intro)}</p>
       <div class="btn-row">
         ${btn('#consultation', 'Book a Free Consultation', 'primary', { iconName: 'arrow' })}
-        ${btn(waLink(`Hi! I'd like to know more about studying in ${inName(d)}.`), `${icon('whatsapp')} Ask on WhatsApp`, 'white', { attrs: 'target="_blank" rel="noopener"' })}
+        ${btn(waLink(`Hi! I'd like to know more about studying in ${inName(d)}.`), `${icon('whatsapp')} Ask on WhatsApp`, 'ghost-light', { attrs: 'target="_blank" rel="noopener"' })}
       </div>
     </div>
   </section>
@@ -485,7 +507,7 @@ ${d.why.map(([t, p]) => `          <article class="card card--flat reveal">${ico
       ${destinationCards(c, others)}
     </div>
   </section>
-${ctaBand(c, { title: `Ready to study in ${esc(inName(d))}?`, preselect: site.formDestinations.find((x) => x.includes(d.short)) || d.name })}`;
+${ctaBand(c, { title: `Ready to study in <em>${esc(inName(d))}?</em>`, preselect: inName(d) })}`;
   return {
     path,
     html: layout(c, {
@@ -767,7 +789,7 @@ export function eventsPage() {
       <div class="grid grid--2">
         ${events.map((e) => eventCard(c, e)).join('\n        ')}
       </div>
-      <p class="note reveal">${icon('info')}Want event reminders? Subscribe to intake alerts in the footer or follow us on social media.</p>
+      <p class="note reveal">${icon('info')}Want event reminders? Follow us on social media or message us on WhatsApp and we’ll let you know.</p>
     </div>
   </section>
 ${ctaBand(c, { title: 'Can’t make an event?', lead: 'Book a one-to-one consultation at a time that suits you — in person, by phone or online.' })}`;
@@ -831,24 +853,6 @@ export function contactPage() {
 /* =========================================================================
    UTILITY PAGES
    ========================================================================= */
-export function thankYouPage() {
-  const path = 'pages/thank-you/';
-  const c = ctx(depthOf(path));
-  const body = `
-  <section class="section center-page">
-    <div class="container container--narrow">
-      <span class="icon-tile icon-tile--lg">${icon('checkCircle')}</span>
-      <h1>Thank you — you’re subscribed</h1>
-      <p class="lead">We’ll send you intake alerts and scholarship news. Have a question now? Message us on WhatsApp.</p>
-      <div class="btn-row btn-row--center">
-        ${btn(c.href(''), 'Back to home', 'outline')}
-        ${btn(waLink(), `${icon('whatsapp')} Chat on WhatsApp`, 'primary', { attrs: 'target="_blank" rel="noopener"' })}
-      </div>
-    </div>
-  </section>`;
-  return { path, html: layout(c, { title: 'Thank You', path, body, noindex: true, description: 'Thank you for contacting us.' }) };
-}
-
 export function privacyPage() {
   const path = 'pages/privacy/';
   const c = ctx(depthOf(path));
@@ -858,9 +862,9 @@ export function privacyPage() {
     <div class="container container--narrow prose">
       <p><em>PLACEHOLDER — have this reviewed against Sri Lanka’s Personal Data Protection Act (PDPA) No. 9 of 2022 before going live.</em></p>
       <h2>What we collect</h2>
-      <p>When you contact us by WhatsApp, phone or email, or subscribe to updates, we collect the details you share with us, such as your name, phone number, email and study preferences.</p>
+      <p>When you contact us by WhatsApp, phone or email, we collect the details you share with us, such as your name, phone number, email and study preferences.</p>
       <h2>How we use it</h2>
-      <p>We use your information only to respond to your enquiry, provide our counselling services and, if you subscribe, send intake and scholarship updates. We never sell your data.</p>
+      <p>We use your information only to respond to your enquiry, provide our counselling services and, if you ask us to, send you intake and scholarship updates. We never sell your data.</p>
       <h2>Sharing</h2>
       <p>With your consent, we share relevant details with universities and service providers to process your applications.</p>
       <h2>Your rights</h2>

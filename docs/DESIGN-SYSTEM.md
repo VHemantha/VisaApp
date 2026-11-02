@@ -17,30 +17,32 @@
 ├── pages/events/                   Fairs, webinars, workshops
 ├── pages/contact/                  WhatsApp, phone, email, hours, map
 ├── pages/privacy/                  Privacy policy (placeholder)
-├── pages/thank-you/                Form success page (noindex)
 ├── 404.html
 ├── sitemap.xml · robots.txt
 ```
 
 ## Colour
 
+All colours come from the logo.
+
 | Token | Hex | Use |
 |---|---|---|
-| `--c-bg` | `#FFF9E0` | Light yellow page background |
-| `--c-bg-alt` | `#FFF3C4` | Deeper yellow for alternate sections, footer |
-| `--c-surface` | `#FFFDF2` | Warm near-white for cards, inputs, header, menus |
-| `--c-primary` | `#2563EB` | Primary buttons, links, icons (5.2:1 with white) |
-| `--c-primary-600 / 700` | `#1D4ED8` / `#1E40AF` | Hover, CTA gradient, badge text |
-| `--c-primary-50 / 100` | `#EFF6FF` / `#DBEAFE` | Icon tiles, badges, tints |
-| `--c-accent` | `#FF7A59` | Warm coral, decorative only (eyebrow dash, glow, award icon) |
-| `--c-teal` | `#0F766E` | Check icons, success badges (AA on white) |
-| `--c-text` | `#0F172A` | Headings and body |
-| `--c-muted` | `#475569` | Secondary text (7.5:1 on white) |
-| `--c-border` | `#EEE2B6` | Warm card and table borders |
+| `--c-bg` | `#F7F7F8` | Page background (the logo's background grey) |
+| `--c-surface` | `#FFFFFF` | Cards, header pill, alternate sections, footer |
+| `--c-ink` | `#1E1E1E` | Headings, body text, dark buttons (the "Prestige." wordmark) |
+| `--c-dark` | `#111114` | Dark sections: why us, CTA band, help card, destination aside |
+| `--c-brand` | `#5A73FF` | The "Migration" blue: serif accent words, glows, beams (large text only) |
+| `--c-brand-soft` | `#8A9FE6` | The logo dot: eyebrow double-dot, accents on dark |
+| `--c-primary` | `#3F5BF0` | Primary buttons, links, icons (5.3:1 with white) |
+| `--c-primary-600 / 700` | `#3049D6` / `#2538AD` | Hover, badge text |
+| `--c-primary-50 / 100` | `#EEF1FF` / `#DDE3FF` | Icon tiles, badges, tints |
+| `--c-muted` | `#55565F` | Secondary text |
+| `--c-border` | `#E5E6EC` | Card and table borders |
 
 ## Typography
 
-- **Headings:** Plus Jakarta Sans 600/700/800, tracking −0.02em, line height 1.15.
+- **Headings:** Plus Jakarta Sans 600/700/800, tight tracking (−0.025 to −0.045em).
+- **Accent:** Instrument Serif italic in `--c-brand`, for one or two words per heading (`<em>` inside an h1/h2). It echoes the "Migration" lettering in the logo.
 - **Body:** Inter 400/500/600, line height 1.7.
 
 | Token | Size | Use |
@@ -54,7 +56,7 @@
 ## Spacing, shape and depth
 - **Spacing:** 4 px base scale (`--sp-1` … `--sp-24`). Sections use fluid `--section-y` (64 → 104 px).
 - **Container:** 1200 px with a 16 px (mobile) or 24 px (≥768) gutter.
-- **Corner radius:** 8 / 12 / **16 (cards)** / 24 (images, panels) / pill (buttons, chips).
+- **Corner radius:** 8 / 12 / **20 (cards)** / 28 (images, panels, destination cards) / pill (buttons, header, chips).
 - **Shadows:** `--shadow-sm` (resting), `--shadow` (hover/open), `--shadow-lg` (lifted cards, forms), `--shadow-blue` (primary button).
 - **Breakpoints:** 640 / 768 / 1024 / 1100 (desktop nav) / 1200.
 
@@ -65,8 +67,27 @@
 | Section header | `.section-head` (+ `--center`), `.eyebrow`, `.lead` | |
 | Cards | `.card`, `.dest-card`, `.service-card`, `.event-card`, `.post-card`, `.testimonial` | Hover lift and image zoom |
 | Badges and chips | `.badge` (`--teal`, `--light`), `.chip`, `.chip--btn` | Filter chips use `aria-pressed` |
-| Form fields | `.field`, `.field__error`, `.form__status` | Inline validation with `aria-invalid` and live messages |
 | Lists | `.check-list`, `.feature-list`, `.num-list`, `.kv` | |
 | Navigation | `.site-header`, `.nav__menu`, `.drawer` | Sticky header, accessible dropdowns, focus-trapped drawer |
 | Data | `.table-wrap` + `.table`, `.stats`, `.quick-facts` | Scrollable on mobile, keyboard-focusable |
-| Motion | `.reveal` | Fade/slide on scroll. Disabled under `prefers-reduced-motion` |
+| Motion | `.reveal` | Rise-in on scroll, staggered per grid (Motion `inView` + `animate`) |
+
+## Motion & 21st.dev-style components
+
+Animations use [Motion](https://motion.dev), the vanilla JavaScript build of Framer Motion, vendored at `assets/js/vendor/motion.min.js` (MIT). The site stays static: the components below are vanilla HTML/CSS ports of popular 21st.dev patterns.
+
+| Pattern | Where | Class / hook |
+|---|---|---|
+| Floating glass navbar with sliding "tubelight" highlight | Header | `.site-header__inner`, `[data-nav-pill]` |
+| Shimmer-border announcement badge | Home hero | `.pill-badge` |
+| Word-by-word blur-in headline | Home hero | `h1[data-split]` |
+| Grid background + aurora glows | Heroes, dark sections | `.bg-grid`, `.glow` |
+| Text rotate | Hero photo chip | `[data-rotator]` |
+| Number ticker | Stats | `[data-count]` |
+| Bento grid with photo cards | Destinations | `.dest-grid--feature`, `.dest-card` |
+| Spotlight cards (cursor glow) | Every `.card` | `--mx` / `--my` |
+| Scroll-linked timeline beam | Process steps | `[data-steps]`, `[data-beam]` |
+| Testimonials marquee (two rows) | Home | `.t-marquee` |
+| Shiny button sweep | Primary, dark and WhatsApp buttons | `.btn--primary` etc. |
+
+Everything is shown statically if Motion fails to load or the visitor has "reduce motion" switched on (`.no-motion`).

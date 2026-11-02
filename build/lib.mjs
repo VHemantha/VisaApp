@@ -1,5 +1,5 @@
 /* =========================================================================
-   Shared helpers, icons and layout partials (header, footer, forms, SEO).
+   Shared helpers, icons and layout partials (header, footer, SEO).
    ========================================================================= */
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -8,7 +8,7 @@ import { images, destinations } from './content.mjs';
 
 // Cache-busting: ?v=<hash> changes whenever styles.css or main.js change
 const ver = (rel) => createHash('md5').update(readFileSync(new URL(`../${rel}`, import.meta.url))).digest('hex').slice(0, 8);
-const V = { css: ver('assets/css/styles.css'), js: ver('assets/js/main.js') };
+const V = { css: ver('assets/css/styles.css'), js: ver('assets/js/main.js'), motion: ver('assets/js/vendor/motion.min.js') };
 
 /* ---------- Basic helpers ---------- */
 export const esc = (s = '') =>
@@ -229,11 +229,11 @@ function header(c, active, path) {
   const mIcon = { home: 'home', destinations: 'globe', services: 'compass', migration: 'briefcase', scholarships: 'award', resources: 'book', about: 'users', contact: 'phone' };
   const mHint = { destinations: `${nav[0].children.length - 1} countries`, resources: 'Stories, events & blog' };
   const mItems = [{ label: 'Home', key: 'home', path: '' }, ...nav];
-  const mobile = mItems.map((item, i) => {
+  const mobile = mItems.map((item) => {
     const ico = `<span class="drawer__icon">${icon(mIcon[item.key] || 'arrow')}</span>`;
     if (!item.children) {
       const cur = item.path === path;
-      return `<li style="--i:${i}"><a class="drawer__link${cur ? ' is-current' : ''}" href="${c.href(item.path)}"${cur ? ' aria-current="page"' : ''}>${ico}<span class="drawer__text">${item.label}</span>${icon('chevronR', 'icon drawer__go')}</a></li>`;
+      return `<li><a class="drawer__link${cur ? ' is-current' : ''}" href="${c.href(item.path)}"${cur ? ' aria-current="page"' : ''}>${ico}<span class="drawer__text">${item.label}</span>${icon('chevronR', 'icon drawer__go')}</a></li>`;
     }
     const open = item.key === active; // auto-open the section you're in
     const id = `drawer-${item.key}`;
@@ -242,7 +242,7 @@ function header(c, active, path) {
       const lead = ch.flag ? flag(ch.flag, ch.label) : ch.all ? icon('arrow', 'icon drawer__all-icon') : '<span class="drawer__dot" aria-hidden="true"></span>';
       return `<li><a class="drawer__sublink${ch.all ? ' drawer__sublink--all' : ''}${cur ? ' is-current' : ''}" href="${c.href(ch.path)}"${cur ? ' aria-current="page"' : ''}>${lead}<span>${esc(ch.label)}${ch.desc ? `<small>${esc(ch.desc)}</small>` : ''}</span></a></li>`;
     }).join('');
-    return `<li style="--i:${i}">
+    return `<li>
             <button class="drawer__link drawer__toggle${open ? ' is-current' : ''}" type="button" aria-expanded="${open}" aria-controls="${id}" data-acc>${ico}<span class="drawer__text">${item.label}<small>${mHint[item.key] || ''}</small></span>${icon('chevron', 'icon drawer__chev')}</button>
             <div class="drawer__sub" id="${id}"><ul>${subs}</ul></div>
           </li>`;
@@ -256,12 +256,13 @@ function header(c, active, path) {
     <div class="container site-header__inner">
       ${logo(c)}
       <nav class="nav" aria-label="Main">
-        <ul class="nav__list">
+        <ul class="nav__list" data-nav>
           ${desktop}
+          <li class="nav__pill" aria-hidden="true" data-nav-pill></li>
         </ul>
       </nav>
       <div class="site-header__actions">
-        <a class="btn btn--primary btn--sm site-header__cta" href="${c.href('pages/contact/')}#consultation">Free Consultation</a>
+        <a class="btn btn--dark btn--sm site-header__cta" href="${c.href('pages/contact/')}#consultation">Free Consultation${icon('arrow')}</a>
         <button class="menu-btn menu-btn--label" type="button" aria-expanded="false" aria-controls="drawer" data-menu-open>${icon('menu')}<span>Menu</span></button>
       </div>
     </div>
@@ -299,11 +300,16 @@ function header(c, active, path) {
 function footer(c) {
   const ho = site.offices[0];
   const socials = Object.entries(site.social).map(([k, url]) => `<a href="${url}" target="_blank" rel="noopener" aria-label="${site.name} on ${k[0].toUpperCase() + k.slice(1)}">${icon(k)}</a>`).join('');
-  const f = site.forms;
-  const isNetlify = f.provider === 'netlify';
   return `
   <footer class="site-footer">
     <div class="container">
+      <div class="site-footer__cta reveal">
+        <h2>Your future abroad, <em>thoughtfully planned.</em></h2>
+        <div class="btn-row">
+          <a class="btn btn--wa" href="${waLink()}" target="_blank" rel="noopener">${icon('whatsapp')} Chat on WhatsApp</a>
+          <a class="btn btn--outline" href="tel:${site.phoneHref}">${icon('phone')} ${esc(site.phone)}</a>
+        </div>
+      </div>
       <div class="site-footer__grid">
         <div class="site-footer__brand">
           ${logo(c)}
@@ -335,19 +341,11 @@ function footer(c) {
             <li>${icon('phone')}<a href="tel:${site.phoneHref}">${esc(site.phone)}</a></li>
             <li>${icon('whatsapp')}<a href="${waLink()}" target="_blank" rel="noopener">WhatsApp us</a></li>
             <li>${icon('mail')}<a href="mailto:${site.email}">${esc(site.email)}</a></li>
+            <li>${icon('clock')}<span>${esc(site.hours[0].days)}: ${esc(site.hours[0].time)}</span></li>
           </ul>
-          <form class="newsletter" id="newsletter" action="${isNetlify ? c.href('pages/thank-you/') : `https://formspree.io/f/${f.formspreeId}`}" method="POST" novalidate data-provider="${f.provider}" data-form-name="newsletter"${isNetlify ? ' name="newsletter" data-netlify="true"' : ''}>
-            ${isNetlify ? '<input type="hidden" name="form-name" value="newsletter">' : '<input type="hidden" name="_subject" value="Newsletter signup">'}
-            <label class="site-footer__title" for="newsletter-email">Intake alerts &amp; scholarship news</label>
-            <div class="newsletter__row">
-              <input id="newsletter-email" name="email" type="email" placeholder="Your email" autocomplete="email" required>
-              <button class="btn btn--primary btn--sm" type="submit">Subscribe</button>
-            </div>
-            <p class="field__error" id="newsletter-email-err" aria-live="polite"></p>
-            <div class="form__status" role="status" aria-live="polite"></div>
-          </form>
         </div>
       </div>
+      <p class="site-footer__wordmark" aria-hidden="true">Prestige<span>.</span></p>
       <div class="site-footer__bottom">
         <p>© <span data-year>${new Date().getFullYear()}</span> ${esc(site.legalName)}. All rights reserved.</p>
         <p><a href="${c.href('pages/privacy/')}">Privacy policy</a> · <a href="${c.href('sitemap.xml')}">Sitemap</a></p>
@@ -389,7 +387,7 @@ export function layout(c, { title, description, path, active, body, schema = [],
   <meta name="description" content="${esc(description)}">
   <link rel="canonical" href="${canonical}">
   ${noindex ? '<meta name="robots" content="noindex">' : ''}
-  <meta name="theme-color" content="#fff9e0">
+  <meta name="theme-color" content="#f7f7f8">
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="${esc(site.name)}">
@@ -410,6 +408,7 @@ export function layout(c, { title, description, path, active, body, schema = [],
   <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="preload" href="${c.asset('assets/fonts/plus-jakarta-sans-latin-var.woff2')}" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="${c.asset('assets/fonts/inter-latin-var.woff2')}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="${c.asset('assets/fonts/instrument-serif-latin-italic.woff2')}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="${c.asset('assets/css/styles.min.css')}?v=${V.css}">
   <script>
     /* Runs before first paint: enables JS styles and decides whether to show the loader */
@@ -420,9 +419,11 @@ export function layout(c, { title, description, path, active, body, schema = [],
         if (mode === 'off' || (mode === 'session' && sessionStorage.getItem('loaderSeen'))) r.classList.add('no-loader');
         else sessionStorage.setItem('loaderSeen', '1');
       } catch (e) {}
-      setTimeout(function () { r.classList.add('is-loaded'); }, 3000); // failsafe if main.js fails
+      setTimeout(function () { r.classList.add('is-loaded'); if (!r.classList.contains('motion-ready')) r.classList.add('no-motion'); }, 3000); // failsafe if main.js or Motion fails
     })(document.documentElement);
   </script>
+  <!-- Motion (motion.dev — the vanilla JS build of Framer Motion), then site scripts -->
+  <script src="${c.asset('assets/js/vendor/motion.min.js')}?v=${V.motion}" defer></script>
   <script src="${c.asset('assets/js/main.js')}?v=${V.js}" defer></script>
   ${graph}
 </head>
