@@ -209,7 +209,7 @@ export const logo = (c) => `<a class="logo" href="${c.href('')}">
         <picture><source srcset="${c.asset('assets/images/logo.webp')}" type="image/webp"><img class="logo__img" src="${c.asset('assets/images/logo.png')}" width="396" height="144" alt="${esc(site.name)} — home"></picture>
       </a>`;
 
-function header(c, active) {
+function header(c, active, path) {
   const desktop = nav.map((item) => {
     const isActive = item.key === active ? ' is-active' : '';
     if (!item.children) return `<li><a class="nav__link${isActive}" href="${c.href(item.path)}"${isActive ? ' aria-current="page"' : ''}>${item.label}</a></li>`;
@@ -225,9 +225,29 @@ function header(c, active) {
           </li>`;
   }).join('\n          ');
 
-  const mobile = nav.map((item) => !item.children
-    ? `<li><a href="${c.href(item.path)}"${item.key === active ? ' aria-current="page"' : ''}>${item.label}</a></li>`
-    : `<li class="drawer__group"><p class="drawer__label">${item.label}</p><ul>${item.children.map((ch) => `<li><a href="${c.href(ch.path)}">${ch.flag ? flag(ch.flag, ch.label) : ''}${esc(ch.label)}</a></li>`).join('')}</ul></li>`).join('\n          ');
+  // ---- Mobile drawer: icon rows, collapsible sections, current-page state ----
+  const mIcon = { home: 'home', destinations: 'globe', services: 'compass', migration: 'briefcase', scholarships: 'award', resources: 'book', about: 'users', contact: 'phone' };
+  const mHint = { destinations: `${nav[0].children.length - 1} countries`, resources: 'Stories, events & blog' };
+  const mItems = [{ label: 'Home', key: 'home', path: '' }, ...nav];
+  const mobile = mItems.map((item, i) => {
+    const ico = `<span class="drawer__icon">${icon(mIcon[item.key] || 'arrow')}</span>`;
+    if (!item.children) {
+      const cur = item.path === path;
+      return `<li style="--i:${i}"><a class="drawer__link${cur ? ' is-current' : ''}" href="${c.href(item.path)}"${cur ? ' aria-current="page"' : ''}>${ico}<span class="drawer__text">${item.label}</span>${icon('chevronR', 'icon drawer__go')}</a></li>`;
+    }
+    const open = item.key === active; // auto-open the section you're in
+    const id = `drawer-${item.key}`;
+    const subs = item.children.map((ch) => {
+      const cur = ch.path === path && !ch.all;
+      const lead = ch.flag ? flag(ch.flag, ch.label) : ch.all ? icon('arrow', 'icon drawer__all-icon') : '<span class="drawer__dot" aria-hidden="true"></span>';
+      return `<li><a class="drawer__sublink${ch.all ? ' drawer__sublink--all' : ''}${cur ? ' is-current' : ''}" href="${c.href(ch.path)}"${cur ? ' aria-current="page"' : ''}>${lead}<span>${esc(ch.label)}${ch.desc ? `<small>${esc(ch.desc)}</small>` : ''}</span></a></li>`;
+    }).join('');
+    return `<li style="--i:${i}">
+            <button class="drawer__link drawer__toggle${open ? ' is-current' : ''}" type="button" aria-expanded="${open}" aria-controls="${id}" data-acc>${ico}<span class="drawer__text">${item.label}<small>${mHint[item.key] || ''}</small></span>${icon('chevron', 'icon drawer__chev')}</button>
+            <div class="drawer__sub" id="${id}"><ul>${subs}</ul></div>
+          </li>`;
+  }).join('\n          ');
+  const mSocial = Object.entries(site.social).map(([k, url]) => `<a href="${url}" target="_blank" rel="noopener" aria-label="${site.name} on ${k[0].toUpperCase() + k.slice(1)}">${icon(k)}</a>`).join('');
 
   return `
   <a class="skip-link" href="#main">Skip to content</a>
@@ -242,7 +262,7 @@ function header(c, active) {
       </nav>
       <div class="site-header__actions">
         <a class="btn btn--primary btn--sm site-header__cta" href="${c.href('pages/contact/')}#consultation">Free Consultation</a>
-        <button class="menu-btn" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Open menu" data-menu-open>${icon('menu')}</button>
+        <button class="menu-btn menu-btn--label" type="button" aria-expanded="false" aria-controls="drawer" data-menu-open>${icon('menu')}<span>Menu</span></button>
       </div>
     </div>
   </header>
@@ -252,16 +272,25 @@ function header(c, active) {
     <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Menu">
       <div class="drawer__top">
         ${logo(c)}
-        <button class="menu-btn" type="button" aria-label="Close menu" data-menu-close>${icon('close')}</button>
+        <button class="drawer__close" type="button" aria-label="Close menu" data-menu-close>${icon('close')}</button>
       </div>
-      <nav aria-label="Mobile">
-        <ul class="drawer__list">
+      <div class="drawer__body">
+        <nav aria-label="Mobile">
+          <ul class="drawer__list">
           ${mobile}
-        </ul>
-      </nav>
-      <div class="drawer__cta">
-        <a class="btn btn--primary btn--block" href="${c.href('pages/contact/')}#consultation">Book a Free Consultation</a>
-        <a class="btn btn--outline btn--block" href="${waLink()}" target="_blank" rel="noopener">${icon('whatsapp')} Chat on WhatsApp</a>
+          </ul>
+        </nav>
+        <div class="drawer__extra">
+          <p class="drawer__hours">${icon('clock')}<span>${esc(site.hours[0].days)}: ${esc(site.hours[0].time)}</span></p>
+          <div class="drawer__social">${mSocial}</div>
+        </div>
+      </div>
+      <div class="drawer__footer">
+        <a class="btn btn--primary btn--block" href="${c.href('pages/contact/')}#consultation">Book a Free Consultation ${icon('arrow')}</a>
+        <div class="drawer__quick">
+          <a class="drawer__quick-btn drawer__quick-btn--wa" href="${waLink()}" target="_blank" rel="noopener">${icon('whatsapp')}<span>WhatsApp</span></a>
+          <a class="drawer__quick-btn" href="tel:${site.phoneHref}">${icon('phone')}<span>Call us</span></a>
+        </div>
       </div>
     </div>
   </div>`;
@@ -399,7 +428,7 @@ export function layout(c, { title, description, path, active, body, schema = [],
 </head>
 <body${bodyClass ? ` class="${bodyClass}"` : ''}>
 ${site.loader === 'off' ? '' : loader(c)}
-${header(c, active)}
+${header(c, active, path)}
   <main id="main">
 ${body}
   </main>

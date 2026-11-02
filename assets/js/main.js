@@ -59,7 +59,8 @@
   const drawer = $('[data-drawer]');
   const openBtn = $('[data-menu-open]');
   let lastFocus = null;
-  const focusables = () => $$('a, button', drawer).filter((el) => el.offsetParent !== null);
+  // only elements that are actually visible (collapsed sub-menus are skipped)
+  const focusables = () => $$('a, button', drawer).filter((el) => el.offsetParent !== null && getComputedStyle(el).visibility !== 'hidden');
 
   function setDrawer(open) {
     if (!drawer) return;
@@ -69,12 +70,19 @@
     document.body.classList.toggle('no-scroll', open);
     if (open) {
       lastFocus = document.activeElement;
-      setTimeout(() => focusables()[0]?.focus(), 50);
+      // dialog pattern: focus the close button first
+      setTimeout(() => ($('.drawer__close', drawer) || focusables()[0])?.focus(), 50);
     } else {
       lastFocus?.focus();
     }
   }
   openBtn?.addEventListener('click', () => setDrawer(true));
+  // Collapsible sections inside the drawer — one open at a time
+  $$('[data-acc]', drawer || document).forEach((btn) => btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    $$('[data-acc]', drawer).forEach((b) => b.setAttribute('aria-expanded', 'false'));
+    btn.setAttribute('aria-expanded', String(!open));
+  }));
   $$('[data-menu-close]').forEach((el) => el.addEventListener('click', () => setDrawer(false)));
   drawer?.addEventListener('click', (e) => { if (e.target.closest('a[href^="#"], a[href*="#consultation"]')) setDrawer(false); });
   document.addEventListener('keydown', (e) => {
